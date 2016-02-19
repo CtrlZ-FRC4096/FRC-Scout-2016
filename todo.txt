@@ -1,0 +1,7 @@
+1. "Escape" feature for breaching
+2. FAIL feature for breaching.
+3. Escape feature for shooting.
+4. Shoot add to history.
+5. JSON synthesis.
+6. End Game
+8. Auto vs Teleop.

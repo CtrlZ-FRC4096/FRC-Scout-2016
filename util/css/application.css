@@ -1,0 +1,24 @@
+@import url(fonts/Raleway.css);
+
+h1 { font-family: 'Raleway', Arial, serif; font-weight: 400;}
+h2 { font-family: 'Raleway', Arial, serif; font-weight: 400;}
+h3 { font-family: 'Raleway', Arial, serif; font-weight: 400;}
+h4 { font-family: 'Raleway', Arial, serif; font-weight: 700;}
+h5 { font-family: 'Raleway', Arial, serif; font-weight: 400;}
+h6 { font-family: 'Raleway', Arial, serif; font-weight: 400;}
+
+
+html,body{
+    height: 100%;
+}
+
+.red{
+    /*background-color: #CA4132;*/
+    background-color: rgb(252, 44, 22);
+}
+.blue{
+    background-color: #4C9DCE;
+}
+.yellow{
+    background-color: #FDFF6E;
+}
