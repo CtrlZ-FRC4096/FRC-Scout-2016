@@ -60,8 +60,19 @@ class Competition {
 
   public function getLastMatchWithData(){
 
-    $query = "SELECT MAX(matchID) as matchID FROM matchEvents WHERE compID = :compID";
-    $params = array(":compID" => $this->id);
+    $query = "SELECT MAX(matchID) as matchID FROM
+          (
+            SELECT MAX(matchID) as matchID FROM matchFeeds WHERE compID = :compID UNION
+            SELECT MAX(matchID) as matchID FROM matchBreaches WHERE compID = :compID1 UNION
+            SELECT MAX(matchID) as matchID FROM matchShoots WHERE compID = :compID2 UNION
+            SELECT MAX(matchID) as matchID FROM matchClimbs WHERE compID = :compID3) as a";
+
+    $params = array(
+      ":compID" => $this->id,
+      ":compID1" => $this->id,
+      ":compID2" => $this->id,
+      ":compID3" => $this->id
+    );
     $result = $this->helper->queryDB($query,$params,false);
 //    var_dump($result);
     if(intval($result[0]['matchID']) > 0){
@@ -76,6 +87,19 @@ class Competition {
 
 
 }
+
+  public function getLastExportedMatchID(){
+    $query = "SELECT MAX(id) as matchID FROM matches WHERE compID = :compID";
+    $params = array(":compID" => $this->id);
+    $result = $this->helper->queryDB($query,$params,false);
+    if(count($result) == 0){
+      return 0;
+
+    }
+    else{
+      return $result[0]["matchID"];
+    }
+  }
 
 
 

@@ -192,13 +192,14 @@ class Match {
 
     foreach($types as $eventType => $tableName){
 
+      $tableName = ucwords($tableName);
+
       $query = "DELETE
               FROM $tableName
               WHERE id IN(
                   SELECT actionID
-                  FROM matchEvents
-                  WHERE eventType = '$eventType'
-                  AND matchID = :matchID
+                  FROM match$tableName
+                  WHERE matchID = :matchID
                   AND compID = :compID
                   AND teamNumber = :teamNumber);
                   ";
@@ -216,6 +217,28 @@ class Match {
         $this->helper->con->rollBack();
         return false;
       }
+
+      $query = "DELETE
+                  FROM match$tableName
+                  WHERE matchID = :matchID
+                  AND compID = :compID
+                  AND teamNumber = :teamNumber;
+                  ";
+
+
+      $stmt = $this->helper->con->prepare($query);
+      if ($params !== null) {
+        foreach ($params as $key => $param) {
+          $stmt->bindValue($key, trim($param));
+        }
+      }
+      try {
+        $stmt->execute();
+      } catch (PDOException $e) {
+        $this->helper->con->rollBack();
+        return false;
+      }
+
 
     }
 
@@ -258,6 +281,23 @@ class Match {
     }
 
 
+
+  }
+
+  public function getNumberOfTeamsScouted(){
+    $query = "
+SELECT DISTINCT teamNumber FROM
+(
+  SELECT DISTINCT teamNumber FROM matchFeeds WHERE matchID = :matchID AND compID = :compID UNION
+  SELECT DISTINCT teamNumber FROM matchShoots WHERE matchID = :matchID AND compID = :compID UNION
+  SELECT DISTINCT teamNumber FROM matchBreaches WHERE matchID = :matchID AND compID = :compID UNION
+  SELECT DISTINCT teamNumber FROM matchClimbs WHERE matchID = :matchID AND compID = :compID
+  ) as a
+";
+    $params = array(":matchID" => $this->id, ":compID" => $this->compID);
+    $result = $this->helper->queryDB($query,$params,false);
+//    var_dump($result);
+    return count($result);
 
   }
 

@@ -19,9 +19,13 @@ class Helper {
 
   public function connectToDB()
   {
-    $host = 'illiniroboticsorg.netfirmsmysql.com';
-    $username = 'scout';
-    $password = 'scoutingisfun';
+    // $host = 'illiniroboticsorg.netfirmsmysql.com';
+    // $username = 'scout';
+    // $password = 'scoutingisfun';
+       $host = 'localhost';
+       $username = 'user';
+       $password = 'user';
+
     $dbname = 'scouting2016';
     try {
       $mycon = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
@@ -156,7 +160,17 @@ class Helper {
 
   }
 
+  public function setCollectionStarted($compID, $matchID, $teamNumber)
+  {
+    $query = "UPDATE teamReservations SET collectionStarted = 1 WHERE compID = :compID AND matchID = :matchID AND teamNumber = :teamNumber";
+    $params = array(
+      ":compID" => $compID,
+      ":matchID" => $matchID,
+      ":teamNumber" => $teamNumber);
 
+    $result = $this->queryDB($query, $params, true);
+    return $result;
+  }
 
 
 

@@ -2,155 +2,156 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-        xmlns:dc="http://purl.org/dc/elements/1.1/"
-        xmlns:cc="http://creativecommons.org/ns#"
-        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        xmlns:svg="http://www.w3.org/2000/svg"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-        height="100%"
-        viewBox = "0 0 929.65527 452.21875"
-        id="svg3060"
-        version="1.1"
-        inkscape:version="0.48.4 r9939"
-        sodipodi:docname="test.svg">
-    <defs
-            id="defs3062" />
-    <sodipodi:namedview
-            id="base"
-            pagecolor="#ffffff"
-            bordercolor="#666666"
-            borderopacity="1.0"
-            inkscape:pageopacity="0.0"
-            inkscape:pageshadow="2"
-            inkscape:zoom="0.49497475"
-            inkscape:cx="1136.5629"
-            inkscape:cy="55.248963"
-            inkscape:document-units="px"
-            inkscape:current-layer="layer1"
-            showgrid="false"
-            fit-margin-top="0"
-            fit-margin-left="0"
-            fit-margin-right="0"
-            fit-margin-bottom="0"
-            inkscape:window-width="1366"
-            inkscape:window-height="705"
-            inkscape:window-x="-8"
-            inkscape:window-y="-8"
-            inkscape:window-maximized="1" />
-    <metadata
-            id="metadata3065">
-        <rdf:RDF>
-            <cc:Work
-                    rdf:about="">
-                <dc:format>image/svg+xml</dc:format>
-                <dc:type
-                        rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-                <dc:title />
-            </cc:Work>
-        </rdf:RDF>
-    </metadata>
-    <g
-            inkscape:label="Layer 1"
-            inkscape:groupmode="layer"
-            id="layer1"
-            transform="translate(944.82765,279.46875)">
-        <path
-                id="path4116"
-                d="m -851.34785,172.58994 -92.86739,-0.35796 -0.4378,-24.70913 c -0.24077,-13.59002 -0.23139,-46.12399 0.021,-72.297708 l 0.45883,-47.58863 17.64516,-0.47706 17.64517,-0.47707 13.57673,-8.11846 c 7.46715,-4.46513 14.74639,-9.7826301 16.1761,-11.8167601 1.42962,-2.03405 9.42038,-15.60516 17.75709,-30.1580199 l 15.15781,-26.45973 0,-18.80027 0,-18.80027 -15.21101,-26.459722 c -8.36599,-14.55277 -16.3954,-28.17823 -17.84298,-30.27862 -1.44769,-2.10039 -9.32959,-7.58373 -17.51554,-12.18515 l -14.88347,-8.36624 -16.40249,-2.7e-4 -16.4025,-1.7e-4 0.38741,-19.1484 0.38749,-19.1485 135.43177,-0.35506 135.43184,-0.35507 0.0342,36.21492 c 0.0184,19.91822 0.0342,54.07517 0.0342,75.904372 0,21.82929 -0.0149,90.1193499 -0.0342,151.75572 l -0.0342,112.066058 -42.82295,0.38758 c -23.55254,0.21315 -84.61322,0.22647 -135.69023,0.0298 z"
-                style="fill-opacity:1"
-                fill="#4c9dce"
-                orig-color="#4c9dce"
-                allow-hover="true"
-                zone-name="Blue Home"
-                inkscape:connector-curvature="0" />
-        <path
-                d="m -487.46235,172.25153 -114.34924,0 -0.0193,-34.81532 c -0.0114,-19.1485 -0.0193,-87.456258 -0.0193,-151.795078 0,-64.3388 0.009,-133.273252 0.0193,-153.187612 l 0.0193,-36.208 32.51058,0 c 29.72714,0 32.70795,-0.21806 34.81536,-2.54677 2.01616,-2.22775 2.30478,-6.9369 2.30478,-37.60063 l 0,-35.05386 23.67445,0 23.67446,0 8.35607,0 58.48981,0 58.48991,0 0.0403,33.07459 c 0.0219,18.19103 0.17863,102.79243 0.34813,188.002972 l 0.30818,154.92831 -32.90411,8e-5 c -28.90116,9e-5 -33.13664,0.28012 -34.81536,2.3019 -1.47941,1.781708 -1.98356,9.727758 -2.23107,35.163578 -0.17583,18.0739 -0.33255,33.9584 -0.34815,35.2988 -0.0263,2.22406 -2.09232,2.43704 -23.64693,2.43704 l -25.37149,0 z"
-                style="fill-opacity:1;stroke:#000000;stroke-width:0.99999988;stroke-opacity:1"
-                id="path4112"
-                fill="#fdff6e"
-                orig-color="#fdff6e"
-                allow-hover="true"
-                zone-name="Neutral Territory"
-                inkscape:connector-curvature="0"
-                sodipodi:nodetypes="cccsccscscccccccscssscscc" />
-        <path
-                id="path4110"
-                d="m -422.34708,171.32317 1.57582,-65.91714 201.92916,0 201.929285,0 0,33.42282 0,33.42268 -201.000835,0 c -110.55048,0 -203.92279,-0.41773 -204.43343,-0.92836 z"
-                style="fill-opacity:1"
-                fill="#fc2c16"
-                orig-color="#fc2c16"
-                allow-hover="true"
-                zone-name="Red Secret Passage"
-                inkscape:connector-curvature="0" />
-        <path
-                id="path4108"
-                d="m -288.80895,-56.485448 c -0.19808,-84.444682 -0.18222,-169.046072 0.0351,-188.003072 l 0.39555,-34.46722 135.64088,0 135.640845,0 0.7358,24.02259 c 0.40467,13.21246 0.70793,25.58929 0.67397,27.50422 -0.034,1.91485 -0.31242,23.53518 -0.61857,48.04517 l -0.55665,44.56373 -16.52056,0.38925 -16.52055,0.38923 -15.1812,8.66276 -15.18113,8.66276 -17.3805,29.941172 -17.380385,29.94127 -0.52703,16.3322 c -0.50984,15.80053 -0.3909,16.61661 3.65317,25.06709 2.29918,4.80414 10.39441,19.3440399 17.989565,32.31082 l 13.80935,23.57603 15.19435,8.80229 15.19436,8.80228 17.27011,0 17.27012,0 -0.87043,4.3519 c -0.47865,2.39357 -0.87035,11.16703 -0.87035,19.49663 l 0,15.14474 -135.767915,0 -135.76789,0 -0.36023,-153.53584 z"
-                style="fill-opacity:1"
-                fill="#fc2c16"
-                orig-color="#fc2c16"
-                allow-hover="true"
-                zone-name="Red Home"
-                inkscape:connector-curvature="0" />
-        <path
-                id="path4106"
-                d="m -28.371805,-4.4375781 c -3.6216,-2.12554 -7.69494,-4.83842 -9.05199,-6.0286699 -1.35697,-1.19026 -4.50387,-3.19582 -6.99325,-4.45672 l -4.52594,-2.29259 0,-20.81776 0,-20.81766 3.82967,-2.0045 c 2.10636,-1.10243 8.18701,-4.87856 13.51266,-8.39149 5.32566,-3.51283 10.49573,-6.38698 11.48913,-6.38698 1.43506,0 1.80607,7.72344 1.80607,37.60063 0,29.1895099 -0.38942,37.58494993 -1.74077,37.53042993 -0.95746,-0.0386 -4.70396,-1.80922003 -8.32558,-3.93469003 z"
-                style="fill-opacity:1"
-                fill="#fc2c16"
-                orig-color="#fc2c16"
-                allow-hover="false"
-                inkscape:connector-curvature="0" />
-        <path
-                id="path4104"
-                d="m -941.60929,-68.670858 c 0,-20.68031 0.27977,-37.600632 0.62168,-37.600632 0.34192,0 4.46838,2.3501 9.16989,5.22232 4.70151,2.872302 10.76595,6.564032 13.47664,8.204012 2.71067,1.63988 5.46807,3.83327 6.12754,4.87409 1.95182,3.08055 1.52446,36.51906 -0.49897,39.04454 -2.93428,3.66228 -25.29595,17.8563 -28.13135,17.8563 -0.42098,0 -0.76543,-16.92031 -0.76543,-37.60063 z"
-                style="fill-opacity:1"
-                fill="#4c9dce"
-                orig-color="#4c9dce"
-                allow-hover="false"
-                inkscape:connector-curvature="0" />
-        <path
-                inkscape:connector-curvature="0"
-                id="path3217"
-                d="m -944.39456,-245.53292 0,-33.42282 201.92925,0 201.92916,0 0,33.42282 0,33.42272 -201.92916,0 -201.92925,0 z"
-                style="fill-opacity:1"
-                fill="#4c9dce"
-                orig-color="#4c9dce"
-                zone-name="Blue Secret Passage"
-                allow-hover="true" />
-        <path
-                inkscape:connector-curvature="0"
-                id="path4118"
-                d="m -674.99175,-203.55381 71.20817,-0.39125 -0.0978,376.19041 -71.20817,-0.0978 z"
-                style="fill:#999999;stroke:none"
-                allow-hover="false" />
-        <path
-                inkscape:connector-curvature="0"
-                id="path4118-5"
-                d="m -357.28118,-278.733 71.20817,-0.39125 -0.0978,376.190452 -71.20817,-0.0975 z"
-                style="fill:#999999;stroke:none"
-                allow-hover="false" />
-        <rect
-                y="-265.5675"
-                x="-925.15936"
-                height="41.472889"
-                width="48.515453"
-                id="rect4156"
-                style="fill-opacity:1;fill-rule:nonzero;stroke:none"
-                fill="#ffffff"
-                orig-color="#ffffff"
-                zone-name="Blue Drop Zone"
-                allow-hover="true" />
-        <rect
-                y="118.88551"
-                x="-83.877876"
-                height="41.472889"
-                width="48.515453"
-                id="rect4156-1"
-                style="fill-opacity:1;fill-rule:nonzero;stroke:none"
-                fill="#ffffff"
-                orig-color="#ffffff"
-                zone-name="Red Drop Zone"
-                allow-hover="true" />
-    </g>
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="100%"
+   viewBox="0 0 929.65527 452.21875"
+   id="svg3060"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="leftBlueFeed.svg"
+   width="100%">
+  <defs
+     id="defs3062" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="728.47714"
+     inkscape:cy="89.109119"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1536"
+     inkscape:window-height="801"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3065">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(944.82765,279.46875)">
+    <path
+       id="path4116"
+       d="m -851.34785,172.58994 -92.86739,-0.35796 -0.4378,-24.70913 c -0.24077,-13.59002 -0.23139,-46.12399 0.021,-72.297708 l 0.45883,-47.58863 17.64516,-0.47706 17.64517,-0.47707 13.57673,-8.11846 c 7.46715,-4.46513 14.74639,-9.7826301 16.1761,-11.8167601 1.42962,-2.03405 9.42038,-15.60516 17.75709,-30.1580199 l 15.15781,-26.45973 0,-18.80027 0,-18.80027 -15.21101,-26.459722 c -8.36599,-14.55277 -16.3954,-28.17823 -17.84298,-30.27862 -1.44769,-2.10039 -9.32959,-7.58373 -17.51554,-12.18515 l -14.88347,-8.36624 -16.40249,-2.7e-4 -16.4025,-1.7e-4 0.38741,-19.1484 0.38749,-19.1485 135.43177,-0.35506 135.43184,-0.35507 0.0342,36.21492 c 0.0184,19.91822 0.0342,54.07517 0.0342,75.904372 0,21.82929 -0.0149,90.1193499 -0.0342,151.75572 l -0.0342,112.066058 -42.82295,0.38758 c -23.55254,0.21315 -84.61322,0.22647 -135.69023,0.0298 z"
+       style="fill-opacity:1"
+       fill="#4c9dce"
+       orig-color="#4c9dce"
+       allow-hover="true"
+       zone-name="Blue Home"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m -487.46235,172.25153 -114.34924,0 -0.0193,-34.81532 c -0.0114,-19.1485 -0.0193,-87.456258 -0.0193,-151.795078 0,-64.3388 0.009,-133.273252 0.0193,-153.187612 l 0.0193,-36.208 32.51058,0 c 29.72714,0 32.70795,-0.21806 34.81536,-2.54677 2.01616,-2.22775 2.30478,-6.9369 2.30478,-37.60063 l 0,-35.05386 23.67445,0 23.67446,0 8.35607,0 58.48981,0 58.48991,0 0.0403,33.07459 c 0.0219,18.19103 0.17863,102.79243 0.34813,188.002972 l 0.30818,154.92831 -32.90411,8e-5 c -28.90116,9e-5 -33.13664,0.28012 -34.81536,2.3019 -1.47941,1.781708 -1.98356,9.727758 -2.23107,35.163578 -0.17583,18.0739 -0.33255,33.9584 -0.34815,35.2988 -0.0263,2.22406 -2.09232,2.43704 -23.64693,2.43704 l -25.37149,0 z"
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.99999988;stroke-opacity:1"
+       id="path4112"
+       fill="#fdff6e"
+       orig-color="#fdff6e"
+       allow-hover="true"
+       zone-name="Neutral Territory"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccsccscscccccccscssscscc" />
+    <path
+       id="path4110"
+       d="m -422.34708,171.32317 1.57582,-65.91714 201.92916,0 201.929285,0 0,33.42282 0,33.42268 -201.000835,0 c -110.55048,0 -203.92279,-0.41773 -204.43343,-0.92836 z"
+       style="fill-opacity:1"
+       fill="#fc2c16"
+       orig-color="#fc2c16"
+       allow-hover="true"
+       zone-name="Red Secret Passage"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path4108"
+       d="m -288.80895,-56.485448 c -0.19808,-84.444682 -0.18222,-169.046072 0.0351,-188.003072 l 0.39555,-34.46722 135.64088,0 135.640845,0 0.7358,24.02259 c 0.40467,13.21246 0.70793,25.58929 0.67397,27.50422 -0.034,1.91485 -0.31242,23.53518 -0.61857,48.04517 l -0.55665,44.56373 -16.52056,0.38925 -16.52055,0.38923 -15.1812,8.66276 -15.18113,8.66276 -17.3805,29.941172 -17.380385,29.94127 -0.52703,16.3322 c -0.50984,15.80053 -0.3909,16.61661 3.65317,25.06709 2.29918,4.80414 10.39441,19.3440399 17.989565,32.31082 l 13.80935,23.57603 15.19435,8.80229 15.19436,8.80228 17.27011,0 17.27012,0 -0.87043,4.3519 c -0.47865,2.39357 -0.87035,11.16703 -0.87035,19.49663 l 0,15.14474 -135.767915,0 -135.76789,0 -0.36023,-153.53584 z"
+       style="fill-opacity:1"
+       fill="#fc2c16"
+       orig-color="#fc2c16"
+       allow-hover="true"
+       zone-name="Red Home"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path4106"
+       d="m -28.371805,-4.4375781 c -3.6216,-2.12554 -7.69494,-4.83842 -9.05199,-6.0286699 -1.35697,-1.19026 -4.50387,-3.19582 -6.99325,-4.45672 l -4.52594,-2.29259 0,-20.81776 0,-20.81766 3.82967,-2.0045 c 2.10636,-1.10243 8.18701,-4.87856 13.51266,-8.39149 5.32566,-3.51283 10.49573,-6.38698 11.48913,-6.38698 1.43506,0 1.80607,7.72344 1.80607,37.60063 0,29.1895099 -0.38942,37.58494993 -1.74077,37.53042993 -0.95746,-0.0386 -4.70396,-1.80922003 -8.32558,-3.93469003 z"
+       style="fill-opacity:1"
+       fill="#fc2c16"
+       orig-color="#fc2c16"
+       allow-hover="false"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path4104"
+       d="m -941.60929,-68.670858 c 0,-20.68031 0.27977,-37.600632 0.62168,-37.600632 0.34192,0 4.46838,2.3501 9.16989,5.22232 4.70151,2.872302 10.76595,6.564032 13.47664,8.204012 2.71067,1.63988 5.46807,3.83327 6.12754,4.87409 1.95182,3.08055 1.52446,36.51906 -0.49897,39.04454 -2.93428,3.66228 -25.29595,17.8563 -28.13135,17.8563 -0.42098,0 -0.76543,-16.92031 -0.76543,-37.60063 z"
+       style="fill-opacity:1"
+       fill="#4c9dce"
+       orig-color="#4c9dce"
+       allow-hover="false"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3217"
+       d="m -944.39456,-245.53292 0,-33.42282 201.92925,0 201.92916,0 0,33.42282 0,33.42272 -201.92916,0 -201.92925,0 z"
+       style="fill-opacity:1"
+       fill="#4c9dce"
+       orig-color="#4c9dce"
+       zone-name="Blue Secret Passage"
+       allow-hover="true" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4118"
+       d="m -674.99175,-203.55381 71.20817,-0.39125 -0.0978,376.19041 -71.20817,-0.0978 z"
+       style="fill:#999999;stroke:none"
+       allow-hover="false" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4118-5"
+       d="m -357.28118,-278.733 71.20817,-0.39125 -0.0978,376.190452 -71.20817,-0.0975 z"
+       style="fill:#999999;stroke:none"
+       allow-hover="false" />
+    <rect
+       y="-265.5675"
+       x="-925.15936"
+       height="41.472889"
+       width="48.515453"
+       id="rect4156"
+       style="fill-opacity:1;fill-rule:nonzero;stroke:none"
+       fill="#ffffff"
+       orig-color="#ffffff"
+       zone-name="Blue Drop Zone"
+       allow-hover="true" />
+    <rect
+       y="118.88551"
+       x="-83.877876"
+       height="41.472889"
+       width="48.515453"
+       id="rect4156-1"
+       style="fill-opacity:1;fill-rule:nonzero;stroke:none"
+       fill="#ffffff"
+       orig-color="#ffffff"
+       zone-name="Red Drop Zone"
+       allow-hover="true" />
+  </g>
 </svg>

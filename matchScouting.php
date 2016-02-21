@@ -5,13 +5,15 @@
  * Date: 2/9/2016
  * Time: 8:47 PM
  */
+$SCOUTING_TEAM = $match->getClaimedTeamForDevice($_COOKIE['deviceID']);
+
 if (isset($_COOKIE['matchData'])) {
   $RESUMING_MATCH = true;
 } else {
   $RESUMING_MATCH = false;
+  $helper->setCollectionStarted($currCompetition->id, $match->id, $SCOUTING_TEAM);
 }
 
-$SCOUTING_TEAM = $match->getClaimedTeamForDevice($_COOKIE['deviceID']);
 switch ($SCOUTING_TEAM) {
   case $match->blue1:
   case $match->blue2:
@@ -170,13 +172,14 @@ switch ($SCOUTING_TEAM) {
 
 <body style="height: 100%;display: flex;flex-direction: column">
 
-
 <div class="row">
   <div style="display: flex; align-items: center; justify-content: space-between;"
        class="col-sm-12 <?= $SCOUTING_TEAM_COLOR ?>">
 
     <h2 style="float: left;color: white;margin: 12px;margin-right: 24px; margin-left: 24px;">
       Team <?= $SCOUTING_TEAM ?></h2>
+
+    <h2 id="modeHeading" data-mode="auto" style="/* float: left; */color: white;margin: 12px;margin-right: 24px; margin-left: 24px;">AUTO MODE</h2>
 
     <h2 style="float: right;color: white;margin: 12px;margin-right: 24px; margin-left: 24px;">Match <?= $match->id ?>
       - <?= $currCompetition->name ?></h2>
@@ -366,10 +369,9 @@ EOT;
           <h1 style="text-align: center;font-weight: bold">Climb</h1>
         </div>
       </div>
-
       <div style="flex-direction:row;display: flex;flex: 0 1 300px;width: 100%;">
 
-        <div id="reachedBatter" data="false" style="display:flex;align-items:center;justify-content: center;flex: 1 1 50%; background-color: #BD5A5A;margin: 50px;">
+        <div id="reachedBatter" data-reached="false" style="display:flex;align-items:center;justify-content: center;flex: 1 1 50%; background-color: #BD5A5A;margin: 50px;">
           <h1 style="margin:15px;text-align: center;font-weight: bold;color:white">Did Not Reach Batter</h1>
 
         </div>
@@ -388,13 +390,19 @@ EOT;
           <h1 style="text-align: center;font-weight: bold" id="climbTimer">00:00 mins</h1>
         </div>
       </div>
-
+      <div class="row">
+        <div class="col-sm-12">
+          <a id="comfirmSubmitMatch" style="margin: 0 auto;" href="#" class="button button-pill button-flat-royal button-large">Submit</a>
+        </div>
+      </div>
     </div>
     <div style="min-width:25%;flex:0 1;display: flex;flex-direction: column;">
       <div style="margin: 15px;flex: 1;display: flex;height: 100%;flex-direction: column;">
-        <h2
-          style="margin:0;width:100%;border: 1px solid black;padding: 20px 0 20px 0;text-align: center;font-weight: bold">
-          History</h2>
+        <div style="margin:0;width:100%;border: 1px solid black;padding: 10px 0 10px 0;text-align: center;">
+          <h2 style="font-weight: bold;margin: 0;">History</h2>
+          <h4 id="historyModeText" style=" margin: 0; margin-top: 5px;">Auto Mode</h4>
+        </div>
+
 
         <div id="historyList"
              style="border: 1px solid black;border-top:0;width: 100%;border-right:2px solid black;flex: 1;overflow: scroll">
@@ -408,6 +416,21 @@ EOT;
 
 
 </div>
+
+
+<div class="remodal" data-remodal-id="confirmSubmitModal" id="confirmSubmitModal">
+  <button data-remodal-action="close" class="remodal-close"></button>
+  <h1>Are you sure?</h1>
+  <p>
+    Take a second to make sure you have finished scouting this match completely, and correctly.
+  </p>
+  <br>
+  <button data-remodal-action="cancel" class="remodal-cancel">Let me make some changes.</button>
+  <button id="submitMatch" data-remodal-action="confirm" class="remodal-confirm">Submit my data.</button>
+</div>
+
+
+
 
 </body>
 <script>
@@ -509,18 +532,21 @@ $(document).ready(function () {
 
       var rightColor = "#FFFFFF",leftColor = "#FFFFFF";
       var img1,img2;
-
+      var fail,startZone,endZone = null ,defenseID = $(defense).attr("defense-id");
       var startColor = startedZone.split(" ")[0];
       var direction = ($(defense).parent().index() < $(".sideCircleContainer[startedHere='true']").parent().index() ? "left" : "right");
 
       if(startColor == "Red"){
         startColor = "#FC2C16";
+        startZone = "Red Home";
       }
       else  if(startColor == "Blue"){
         startColor = "#4C9DCE";
+        startZone = "Blue Home";
       }
       else{
         startColor = "#FDFF6E";
+        startZone = "Neutral Territory";
       }
 
       if (direction == "right") {
@@ -532,17 +558,23 @@ $(document).ready(function () {
 
 
       if($(this).hasClass("sideCircleContainer")){
-
+        fail = "false";
         var endingZone = $(".backOutFromBreachCircle:visible").parent().parent().attr("zone-name");
         var endColor = endingZone.split(" ")[0];
         if(endColor == "Red"){
           endColor = "#FC2C16";
+          endZone = "Red Home";
+
         }
         else if(endColor == "Blue"){
           endColor = "#4C9DCE";
+          endZone = "Blue Home";
+
         }
         else{
           endColor = "#FDFF6E";
+          endZone = "Neutral Territory";
+
         }
 
         if (direction == "right") {
@@ -568,6 +600,7 @@ $(document).ready(function () {
 
       }
       else{
+        fail = "true";
         if(direction == "right"){
           img1 =  '/util/img/' + direction + 'Arrow.png';
           img2 = '/util/img/trapped.png';
@@ -581,24 +614,31 @@ $(document).ready(function () {
 
 
 
+    var mode = $("#modeHeading").attr("data-mode");
 
 
-
-      var html = '<div class="historyItem breachHistoryItem" style="display: flex">' +
-        '<img class="deleteHistoryItem" src="/util/img/redX.gif" style="flex: 0 0 10%;height: 85%;">' +
-        '<div style="display: flex;flex: 1 1 80%;flex-direction: row;height: 100%">' +
-        '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + leftColor + '">' +
-        '<img src="'+img1+'" style="width: 80%;margin: 0 auto"/>' +
-        '</div>' +
-        '<div style="flex : 1 0 60%;background-image: ' + defenseImg.replace(new RegExp('"', 'g'), "'") + ';background-size: contain; background-repeat: no-repeat; background-position: center;"></div>' +
-        '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + rightColor + '">' +
-        '<img src="'+img2+'" style="width: 80%;margin: 0 auto"/>' +
-        '</div>' +
-        '</div>' +
-        '<img class="moveHistoryItem" src="/util/img/upDownImage.png" style="flex: 0 0 10%;height: 85%;">' +
-        '</div> ';
+      var html = '<div ' +
+                   ' data-startZone="'+startZone+'"' +
+                   ' data-endZone="'+endZone+'"' +
+                   ' data-defenseID="'+defenseID+'"' +
+                   ' data-fail="'+fail+'" ' +
+                   ' data-actionType="breach"' +
+                   ' data-mode="'+mode+'" ' +
+                   'class="historyItem" style="display: flex">' +
+                        '<img class="deleteHistoryItem" src="/util/img/redX.gif" style="flex: 0 0 10%;height: 85%;">' +
+                        '<div style="display: flex;flex: 1 1 80%;flex-direction: row;height: 100%">' +
+                            '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + leftColor + '">' +
+                                '<img src="'+img1+'" style="width: 80%;margin: 0 auto"/>' +
+                            '</div>' +
+                            '<div style="flex : 1 0 60%;background-image: ' + defenseImg.replace(new RegExp('"', 'g'), "'") + ';background-size: contain; background-repeat: no-repeat; background-position: center;"></div>' +
+                            '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + rightColor + '">' +
+                                '<img src="'+img2+'" style="width: 80%;margin: 0 auto"/>' +
+                            '</div>' +
+                        '</div>' +
+                        '<img class="moveHistoryItem" src="/util/img/upDownImage.png" style="flex: 0 0 10%;height: 85%;">' +
+                '</div> ';
       $("#historyList").prepend(html);
-
+      generateJSON()
 
 
       $(".sideCircleContainer[startedHere='true']").removeAttr("startedHere").find(".startBreachCircle").hide();
@@ -785,12 +825,13 @@ $(document).ready(function () {
   });
 
   $("#endGamePage #reachedBatter").click(function(){
-    if($(this).attr("data") == "false"){
-      $(this).attr("data","true").css("background-color","#458045").find("h1").text("Reached Batter");
+    if($(this).attr("data-reached") == "false"){
+      $(this).attr("data-reached","true").css("background-color","#458045").find("h1").text("Reached Batter");
     }
     else{
-      $(this).attr("data","false").css("background-color","#BD5A5A").find("h1").text("Did Not Reach Batter");;
+      $(this).attr("data-reached","false").css("background-color","#BD5A5A").find("h1").text("Did Not Reach Batter");;
     }
+    generateJSON();
   })
 
   var sec = 0;
@@ -811,12 +852,57 @@ var climbTimer;
     else{
       clearInterval(climbTimer);
       $(this).attr("data-started","false").find("h1").text("Start")
-
+      generateJSON()
     }
 
 
   });
 
+  $("#modeHeading").click(function(){
+    var currMode = $(this).attr("data-mode");
+
+    if(currMode == "auto"){
+      $(this).text("TELE MODE").attr("data-mode","tele");
+      $("#historyModeText").text("Tele Mode");
+      $("#historyList .historyItem[data-mode='auto']").hide();
+      $("#historyList .historyItem[data-mode='tele']").show();
+    }
+    else if(currMode == "tele"){
+      $(this).text("AUTO MODE").attr("data-mode","auto");
+      $("#historyModeText").text("Auto Mode");
+
+      $("#historyList .historyItem[data-mode='tele']").hide();
+      $("#historyList .historyItem[data-mode='auto']").show();
+    }
+
+
+  })
+
+
+  $("#submitMatch").click(function(){
+
+    $.ajax({
+      type: "POST",
+      url: "/util/php/serve/addMatchData.php",
+      data: {data: $.cookie("matchData")},
+      async: false,
+      success: function (data) {
+        if(data == "Success"){
+          toastr["success"]("The match has been updated successfully", "Success!")
+          $.removeCookie('matchData', { path: '/' });
+          location.reload();
+        }
+      }
+    });
+
+
+
+  })
+
+  $("#comfirmSubmitMatch").click(function(){
+    var inst = $("#confirmSubmitModal").remodal();
+    inst.open();
+  })
 
 
 });
@@ -885,22 +971,28 @@ function feedSVGDocClick(e) {
   if (e.target.getAttribute("allow-hover") == "true") {
 
     var zone = e.target.getAttribute("zone-name");
+    var mode = $("#modeHeading").attr("data-mode");
 
-    $("#historyList").prepend("<div class=\"historyItem feedHistoryItem\" style='display: flex'> " +
+    $("#historyList").prepend("<div data-zone='"+zone+"' data-actionType='feed' data-mode="+mode+" class=\"historyItem\" style='display: flex'> " +
     "<img class='deleteHistoryItem' src='/util/img/redX.gif' style='flex: 0 0 10%;height: 85%;'/>" +
     "<h3 style='flex: 1 1 80%;text-align: center;line-height: 21px'><b>Feed</b> - " + zone + "</h3>" +
     "<img class='moveHistoryItem' src='/util/img/upDownImage.png' style='flex: 0 0 10%;height: 85%;'/>" +
     "</div>");
-
+    generateJSON()
     $("#historyList h3").each(function (index, e) {
-      var enteredLoop = false;
-      while ($(this).height() != 21) {
-        enteredLoop = true
-        $(this).css("font-size", (parseFloat($(this).css("font-size").substring(0, $(this).css("font-size").length - 2)) - 0.1) + "px");
-      }
 
-      if (enteredLoop) {
-        $(this).css("font-size", (parseFloat($(this).css("font-size").substring(0, $(this).css("font-size").length - 2)) - 0.5) + "px");
+      if($(this).is(":visible")){
+
+        var enteredLoop = false;
+        while ($(this).height() != 21) {
+          enteredLoop = true
+          $(this).css("font-size", (parseFloat($(this).css("font-size").substring(0, $(this).css("font-size").length - 2)) - 0.1) + "px");
+        }
+
+        if (enteredLoop) {
+          $(this).css("font-size", (parseFloat($(this).css("font-size").substring(0, $(this).css("font-size").length - 2)) - 0.5) + "px");
+        }
+
       }
 
     })
@@ -984,8 +1076,13 @@ function checkAndAddShootHistoryItem(){
     else{
       level = "Low";
     }
+    var mode = $("#modeHeading").attr("data-mode");
 
-    $("#historyList").prepend("<div class=\"historyItem shootHistoryItem\" style='background: "+bg+"; display: flex'> " +
+    $("#historyList").prepend("<div data-coordX='"+SHOOT_POS_X+"'" +
+    " data-coordY='"+SHOOT_POS_Y+"'" +
+    " data-highLow='"+SHOOT_LEVEL+"'" +
+    " data-scoreMiss='"+SHOOT_RESULT+"' " +
+    "data-actionType=\"shoot\" data-mode="+mode+" class=\"historyItem\" style='background: "+bg+"; display: flex'> " +
     "<img class='deleteHistoryItem' src='/util/img/redX.gif' style='flex: 0 0 10%;height: 85%;'/>" +
     "<h3 style='flex: 1 1 80%;text-align: center;line-height: 21px'><b>" + result +"</b> " + level + " Goal</h3>" +
     "<img class='moveHistoryItem' src='/util/img/upDownImage.png' style='flex: 0 0 10%;height: 85%;'/>" +
@@ -997,9 +1094,82 @@ function checkAndAddShootHistoryItem(){
     $("#shootPage #shootHigh, #shootPage #shootLow").animate({ backgroundColor: "transparent"}, 'slow').removeAttr("selected");
 
     SHOOT_LEVEL = SHOOT_POS_X = SHOOT_POS_Y = SHOOT_RESULT = null;
-
+    generateJSON();
   }
 }
+
+function generateJSON(){
+
+  var records = [];
+  var counter = 1;
+  $("#historyList .historyItem[data-mode='auto']").each(function(){
+
+    records.push(getRecord(this,"auto"));
+
+    counter++;
+  });
+  counter = 1;
+  $("#historyList .historyItem[data-mode='tele']").each(function(){
+
+    records.push(getRecord(this,"tele"));
+
+    counter++;
+  });
+
+  var endGame = {
+    batterReached : $("#reachedBatter").attr("data-reached"),
+    duration : $("#climbTimer").text().substr(0,5)
+  };
+
+  var matchData = {
+    actions: records,
+    endGame:  endGame,
+    teamNumber: <?=$SCOUTING_TEAM?>,
+    matchID: <?=$match->id?>,
+    compID: <?=$currCompetition->id?>
+  };
+
+  $.cookie("matchData",JSON.stringify(matchData));
+
+  function getRecord(e,mode){
+
+    var record = {};
+    switch($(e).attr("data-actionType")){
+      case "feed":
+        record.zone = $(e).attr("data-zone");
+        record.orderID = counter;
+        record.eventType = "feed";
+        break;
+      case "breach":
+        record.startZone = $(e).attr("data-startZone");
+        record.defenseID = $(e).attr("data-defenseID");
+        record.endZone = $(e).attr("data-endZone");
+        record.endZone = (record.endZone == "null" ? null : record.endZone);
+        record.fail = $(e).attr("data-fail");
+        record.orderID = counter;
+        record.eventType = "breach";
+
+        break;
+      case "shoot":
+        record.coordX = $(e).attr("data-coordX");
+        record.coordY = $(e).attr("data-coordY");
+        record.scoreMiss = $(e).attr("data-scoreMiss");
+        record.highLow = $(e).attr("data-highLow");
+        record.orderID = counter;
+        record.eventType = "shoot";
+
+        break;
+      default:
+        break;
+    }
+    record.mode= mode;
+
+    return record;
+
+  }
+
+}
+
 
 </script>
 </html>
