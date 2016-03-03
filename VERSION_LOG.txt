@@ -1,0 +1,17 @@
+Version 0.1
+------------
+
+1.  Escape feature for breaching
+2.  Escape feature for shooting.
+3.  "Abort" match on scouting screen + teamSelection
+4.  generateJSON on delete history item, and drag history item
+5.  Resume match from JSON
+6.  Touchscreen compatible for feed, shoot and end game.
+7.  fix match Config
+8.  start Checking on resume of teamSelection.
+9.  keyboard shortcuts
+10. check if ratings are submitted.
+11. Abort Match Confirmation
+12. Pointer finger on all clickable items.
+13. Require ratings.
+14. Reorganized Files.

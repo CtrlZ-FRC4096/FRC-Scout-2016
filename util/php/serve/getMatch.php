@@ -8,7 +8,7 @@
 
 include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
-$match = new Match($_POST['matchID'],$_POST['compID']);
+$match = new Match($_POST['matchNumber'],$_POST['compID']);
 
 if($_POST['records']){
 

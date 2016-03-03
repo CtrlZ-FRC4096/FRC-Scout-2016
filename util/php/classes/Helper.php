@@ -100,7 +100,11 @@ class Helper {
 
   public function getTeamNumbersForCompetition($compID){
 
-    $query = "SELECT teamNumber FROM teamCompetitions WHERE compID = :compID";
+    $query = "SELECT DISTINCT teamNumber FROM teammatches
+                  JOIN matches ON matches.id = teammatches.matchID
+                  JOIN competitions ON competitions.id = matches.compID
+                  WHERE compID = :compID
+              ORDER BY teamNumber ASC";
     $params = array(":compID" => $compID);
     $result = $this->queryDB($query,$params,false);
     $arr = array();
@@ -147,7 +151,13 @@ class Helper {
 
 
   public function getCurrentStatusOfUser($deviceID, $compID){
-    $query = "SELECT * FROM teamReservations WHERE deviceID = :deviceID AND collectionEnded = 0 AND compID = :compID";
+    $query = "SELECT * FROM teammatches
+              JOIN matches ON matches.id = teammatches.matchID
+              WHERE deviceID = :deviceID
+              AND matches.compID = :compID
+              AND collectionEnded = 0
+              ORDER BY matchNumber DESC
+              LIMIT 0,1";
     $params = array(":deviceID" => $deviceID,":compID" => $compID);
     $result = $this->queryDB($query,$params,false);
 
@@ -155,19 +165,31 @@ class Helper {
       return "teamSelection";
     }
     else{
-      return "startMatch-" . $result[0]['matchID'];
+      if($result[0]['collectionStarted'] == 1){
+        return "startMatch-" . $result[0]['matchNumber'];
+      }
+      else{
+        $match = new Match($result[0]['matchNumber'],$compID);
+        if($match->isConfigured()){
+          return "startMatch-" . $result[0]['matchNumber'];
+        }
+        else{
+          return "teamSelection-" . $result[0]['teamNumber'] . "-" . $result[0]['matchNumber'];
+        }
+      }
     }
 
   }
 
-  public function setCollectionStarted($compID, $matchID, $teamNumber)
+  public function setCollectionStarted($matchID, $teamNumber)
   {
-    $query = "UPDATE teamReservations SET collectionStarted = 1 WHERE compID = :compID AND matchID = :matchID AND teamNumber = :teamNumber";
+    $query = "UPDATE teammatches SET collectionStarted = 1 WHERE matchID = :matchID AND teamNumber = :teamNumber";
+
     $params = array(
-      ":compID" => $compID,
       ":matchID" => $matchID,
       ":teamNumber" => $teamNumber);
 
+//   var_dump($params);
     $result = $this->queryDB($query, $params, true);
     return $result;
   }

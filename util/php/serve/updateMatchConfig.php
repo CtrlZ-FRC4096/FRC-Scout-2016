@@ -9,28 +9,27 @@ include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
 $data = json_decode($_POST['data']);
 
-$matchID = $data->matchID;
-$match = new Match($matchID,$_POST['compID']);
+$matchNumber = $data->matchNumber;
+$match = new Match($matchNumber,$data->compID);
 
-$match->red1 = $data->red1;
-$match->red2 = $data->red2;
-$match->red3 = $data->red3;
-$match->blue1 = $data->blue1;
-$match->blue2 = $data->blue2;
-$match->blue3 = $data->blue3;
+$match->teams['red1'] = $data->red1;
+$match->teams['red2'] = $data->red2;
+$match->teams['red3'] = $data->red3;
+$match->teams['blue1']  = $data->blue1;
+$match->teams['blue2']  = $data->blue2;
+$match->teams['blue3']  = $data->blue3;
+
+
 //var_dump($_POST);
-$match->update();
+$match->updateTeams();
 
 
 $match->deleteAllDefenses();
 
-$comp = $data->compID;
-
 foreach($data->data as $defense){
   $matchDefense = new MatchDefense();
 
-  $matchDefense->matchID = $matchID;
-  $matchDefense->compID = $comp;
+  $matchDefense->matchID = $match->id;
   $matchDefense->side = $defense->side;
   $matchDefense->slot = $defense->slot;
   $matchDefense->id = $defense->defenseID;

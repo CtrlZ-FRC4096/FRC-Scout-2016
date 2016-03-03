@@ -7,207 +7,438 @@
     <preference name='ui.shelf.height' value='26' />
   </preferences>
   <datasources>
-    <datasource caption='competitions (scouting2016)' inline='true' name='mysql.1r4xukm0iv0dx711mn69k1lh06g3' version='9.2'>
+    <datasource caption='teams+ (scouting2016)' inline='true' name='mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0' version='9.2'>
       <connection class='mysql' dbname='scouting2016' odbc-native-protocol='yes' port='3306' server='localhost' source-charset='' username='user'>
         <relation join='inner' type='join'>
           <clause type='join'>
             <expression op='='>
-              <expression op='[matchfeeds].[zoneID]' />
-              <expression op='[feedZones].[id]' />
+              <expression op='[teams].[teamNumber]' />
+              <expression op='[breachDistributions].[teamNumber]' />
             </expression>
           </clause>
-          <relation join='inner' type='join'>
+          <relation join='left' type='join'>
             <clause type='join'>
               <expression op='='>
-                <expression op='[matchbreaches].[endZone]' />
-                <expression op='[breachEndZones].[id]' />
+                <expression op='[matchfeeds].[zoneID]' />
+                <expression op='[feedZones].[id]' />
               </expression>
             </clause>
-            <relation join='inner' type='join'>
+            <relation join='left' type='join'>
               <clause type='join'>
                 <expression op='='>
-                  <expression op='[matchbreaches].[startZone]' />
-                  <expression op='[breachStartZones].[id]' />
+                  <expression op='[matchbreaches].[endZone]' />
+                  <expression op='[breachEndZones].[id]' />
                 </expression>
               </clause>
-              <relation join='inner' type='join'>
+              <relation join='left' type='join'>
                 <clause type='join'>
                   <expression op='='>
-                    <expression op='[matchbreaches].[defenseID]' />
-                    <expression op='[breachDefenses].[id]' />
+                    <expression op='[matchbreaches].[startZone]' />
+                    <expression op='[breachStartZones].[id]' />
                   </expression>
                 </clause>
-                <relation join='inner' type='join'>
+                <relation join='left' type='join'>
                   <clause type='join'>
-                    <expression op='AND'>
-                      <expression op='='>
-                        <expression op='[matches].[id]' />
-                        <expression op='[matchshoots].[matchID]' />
-                      </expression>
-                      <expression op='='>
-                        <expression op='[matches].[compID]' />
-                        <expression op='[matchshoots].[compID]' />
-                      </expression>
+                    <expression op='='>
+                      <expression op='[matchbreaches].[defenseID]' />
+                      <expression op='[defenses].[id]' />
                     </expression>
                   </clause>
-                  <relation join='inner' type='join'>
+                  <relation join='left' type='join'>
                     <clause type='join'>
-                      <expression op='AND'>
-                        <expression op='='>
-                          <expression op='[matches].[id]' />
-                          <expression op='[matchfeeds].[matchID]' />
-                        </expression>
-                        <expression op='='>
-                          <expression op='[matches].[compID]' />
-                          <expression op='[matchfeeds].[compID]' />
-                        </expression>
+                      <expression op='='>
+                        <expression op='[teammatches].[id]' />
+                        <expression op='[matchshoots].[teamMatchID]' />
                       </expression>
                     </clause>
-                    <relation join='inner' type='join'>
+                    <relation join='left' type='join'>
                       <clause type='join'>
-                        <expression op='AND'>
-                          <expression op='='>
-                            <expression op='[matches].[id]' />
-                            <expression op='[matchclimbs].[matchID]' />
-                          </expression>
-                          <expression op='='>
-                            <expression op='[matches].[compID]' />
-                            <expression op='[matchclimbs].[compID]' />
-                          </expression>
+                        <expression op='='>
+                          <expression op='[teammatches].[id]' />
+                          <expression op='[matchfeeds].[teamMatchID]' />
                         </expression>
                       </clause>
-                      <relation join='inner' type='join'>
+                      <relation join='left' type='join'>
                         <clause type='join'>
-                          <expression op='AND'>
-                            <expression op='='>
-                              <expression op='[matches].[id]' />
-                              <expression op='[matchbreaches].[matchID]' />
-                            </expression>
-                            <expression op='='>
-                              <expression op='[matches].[compID]' />
-                              <expression op='[matchbreaches].[compID]' />
-                            </expression>
+                          <expression op='='>
+                            <expression op='[teammatches].[id]' />
+                            <expression op='[matchclimbs].[teamMatchID]' />
                           </expression>
                         </clause>
-                        <relation join='inner' type='join'>
+                        <relation join='left' type='join'>
                           <clause type='join'>
                             <expression op='='>
-                              <expression op='[competitions].[id]' />
-                              <expression op='[matches].[compID]' />
+                              <expression op='[teammatches].[id]' />
+                              <expression op='[matchbreaches].[teamMatchID]' />
                             </expression>
                           </clause>
                           <relation join='inner' type='join'>
                             <clause type='join'>
                               <expression op='='>
-                                <expression op='[teamcompetitions].[teamNumber]' />
-                                <expression op='[teams].[teamNumber]' />
+                                <expression op='[matches].[compID]' />
+                                <expression op='[competitions].[id]' />
                               </expression>
                             </clause>
                             <relation join='inner' type='join'>
                               <clause type='join'>
                                 <expression op='='>
-                                  <expression op='[competitions].[id]' />
-                                  <expression op='[teamcompetitions].[compID]' />
+                                  <expression op='[teammatches].[matchID]' />
+                                  <expression op='[matches].[id]' />
                                 </expression>
                               </clause>
-                              <relation name='competitions' table='[competitions]' type='table' />
-                              <relation name='teamcompetitions' table='[teamcompetitions]' type='table' />
+                              <relation join='inner' type='join'>
+                                <clause type='join'>
+                                  <expression op='='>
+                                    <expression op='[teams].[teamNumber]' />
+                                    <expression op='[teammatches].[teamNumber]' />
+                                  </expression>
+                                </clause>
+                                <relation name='teams' table='[teams]' type='table' />
+                                <relation name='teammatches' table='[teammatches]' type='table' />
+                              </relation>
+                              <relation name='matches' table='[matches]' type='table' />
                             </relation>
-                            <relation name='teams' table='[teams]' type='table' />
+                            <relation name='competitions' table='[competitions]' type='table' />
                           </relation>
-                          <relation name='matches' table='[matches]' type='table' />
+                          <relation name='matchbreaches' table='[matchbreaches]' type='table' />
                         </relation>
-                        <relation name='matchbreaches' table='[matchbreaches]' type='table' />
+                        <relation name='matchclimbs' table='[matchclimbs]' type='table' />
                       </relation>
-                      <relation name='matchclimbs' table='[matchclimbs]' type='table' />
+                      <relation name='matchfeeds' table='[matchfeeds]' type='table' />
                     </relation>
-                    <relation name='matchfeeds' table='[matchfeeds]' type='table' />
+                    <relation name='matchshoots' table='[matchshoots]' type='table' />
                   </relation>
-                  <relation name='matchshoots' table='[matchshoots]' type='table' />
+                  <relation name='defenses' table='[defenses]' type='table' />
                 </relation>
-                <relation name='breachDefenses' table='[defenses]' type='table' />
+                <relation name='breachStartZones' table='[zones]' type='table' />
               </relation>
-              <relation name='breachStartZones' table='[zones]' type='table' />
+              <relation name='breachEndZones' table='[zones]' type='table' />
             </relation>
-            <relation name='breachEndZones' table='[zones]' type='table' />
+            <relation name='feedZones' table='[zones]' type='table' />
           </relation>
-          <relation name='feedZones' table='[zones]' type='table' />
+          <relation name='breachDistributions' type='text'>SELECT defenses.id as outerDefenseID,defenses.name&#13;&#10;    ,teamNumber&#13;&#10;    ,direction&#13;&#10;    ,SUM((SELECT COUNT(id)&#13;&#10;            FROM matchBreaches&#13;&#10;            WHERE teamMatchID = teamMatches.id &#13;&#10;              AND defenseID = outerDefenseID&#13;&#10;              AND IF(startZone = 7,&apos;Away From Opponent&apos;,&apos;Toward Opponent&apos;) = direction)) as breachDefenseCount&#13;&#10;FROM defenses&#13;&#10;JOIN teamMatches&#13;&#10;JOIN&#13;&#10;  (SELECT &apos;Away From Opponent&apos; as direction&#13;&#10;   UNION&#13;&#10;   SELECT &apos;Toward Opponent&apos; as direction) as directions&#13;&#10;GROUP BY outerDefenseID,teamNumber,direction</relation>
         </relation>
         <cols>
-          <map key='[actionID (matchclimbs)]' value='[matchclimbs].[actionID]' />
-          <map key='[actionID (matchfeeds)]' value='[matchfeeds].[actionID]' />
-          <map key='[actionID (matchshoots)]' value='[matchshoots].[actionID]' />
-          <map key='[actionID]' value='[matchbreaches].[actionID]' />
           <map key='[batterReached]' value='[matchclimbs].[batterReached]' />
-          <map key='[blue1]' value='[matches].[blue1]' />
-          <map key='[blue2]' value='[matches].[blue2]' />
-          <map key='[blue3]' value='[matches].[blue3]' />
-          <map key='[category]' value='[breachDefenses].[category]' />
-          <map key='[compID (matchbreaches)]' value='[matchbreaches].[compID]' />
-          <map key='[compID (matchclimbs)]' value='[matchclimbs].[compID]' />
-          <map key='[compID (matches)]' value='[matches].[compID]' />
-          <map key='[compID (matchfeeds)]' value='[matchfeeds].[compID]' />
-          <map key='[compID (matchshoots)]' value='[matchshoots].[compID]' />
-          <map key='[compID]' value='[teamcompetitions].[compID]' />
+          <map key='[breachDefenseCount]' value='[breachDistributions].[breachDefenseCount]' />
+          <map key='[category]' value='[defenses].[category]' />
+          <map key='[collectionEnded]' value='[teammatches].[collectionEnded]' />
+          <map key='[collectionStarted]' value='[teammatches].[collectionStarted]' />
+          <map key='[compID]' value='[matches].[compID]' />
           <map key='[coordX]' value='[matchshoots].[coordX]' />
           <map key='[coordY]' value='[matchshoots].[coordY]' />
           <map key='[current]' value='[competitions].[current]' />
           <map key='[defenseID]' value='[matchbreaches].[defenseID]' />
+          <map key='[defensiveRating]' value='[matchclimbs].[defensiveRating]' />
+          <map key='[deviceID]' value='[teammatches].[deviceID]' />
+          <map key='[direction]' value='[breachDistributions].[direction]' />
           <map key='[duration]' value='[matchclimbs].[duration]' />
           <map key='[endZone]' value='[matchbreaches].[endZone]' />
           <map key='[exported]' value='[matches].[exported]' />
           <map key='[fail]' value='[matchbreaches].[fail]' />
           <map key='[highLow]' value='[matchshoots].[highLow]' />
-          <map key='[id (defenses)]' value='[breachDefenses].[id]' />
+          <map key='[id (breachEndZones)]' value='[breachEndZones].[id]' />
+          <map key='[id (breachStartZones)]' value='[breachStartZones].[id]' />
+          <map key='[id (competitions)]' value='[competitions].[id]' />
+          <map key='[id (defenses)]' value='[defenses].[id]' />
+          <map key='[id (feedZones)]' value='[feedZones].[id]' />
           <map key='[id (matchbreaches)]' value='[matchbreaches].[id]' />
           <map key='[id (matchclimbs)]' value='[matchclimbs].[id]' />
           <map key='[id (matches)]' value='[matches].[id]' />
           <map key='[id (matchfeeds)]' value='[matchfeeds].[id]' />
           <map key='[id (matchshoots)]' value='[matchshoots].[id]' />
-          <map key='[id (zones) #1]' value='[breachEndZones].[id]' />
-          <map key='[id (zones) #2]' value='[feedZones].[id]' />
-          <map key='[id (zones)]' value='[breachStartZones].[id]' />
-          <map key='[id]' value='[competitions].[id]' />
-          <map key='[img]' value='[breachDefenses].[img]' />
+          <map key='[id]' value='[teammatches].[id]' />
+          <map key='[img]' value='[defenses].[img]' />
           <map key='[leftSideAlliance]' value='[competitions].[leftSideAlliance]' />
-          <map key='[matchID (matchclimbs)]' value='[matchclimbs].[matchID]' />
-          <map key='[matchID (matchfeeds)]' value='[matchfeeds].[matchID]' />
-          <map key='[matchID (matchshoots)]' value='[matchshoots].[matchID]' />
-          <map key='[matchID]' value='[matchbreaches].[matchID]' />
+          <map key='[matchData]' value='[teammatches].[matchData]' />
+          <map key='[matchID]' value='[teammatches].[matchID]' />
+          <map key='[matchNumber]' value='[matches].[matchNumber]' />
           <map key='[mode (matchclimbs)]' value='[matchclimbs].[mode]' />
           <map key='[mode (matchfeeds)]' value='[matchfeeds].[mode]' />
           <map key='[mode (matchshoots)]' value='[matchshoots].[mode]' />
           <map key='[mode]' value='[matchbreaches].[mode]' />
-          <map key='[name (defenses)]' value='[breachDefenses].[name]' />
-          <map key='[name (zones) #1]' value='[breachEndZones].[name]' />
-          <map key='[name (zones) #2]' value='[feedZones].[name]' />
-          <map key='[name (zones)]' value='[breachStartZones].[name]' />
+          <map key='[name (Custom SQL Query)]' value='[breachDistributions].[name]' />
+          <map key='[name (breachEndZones)]' value='[breachEndZones].[name]' />
+          <map key='[name (breachStartZones)]' value='[breachStartZones].[name]' />
+          <map key='[name (defenses)]' value='[defenses].[name]' />
+          <map key='[name (feedZones)]' value='[feedZones].[name]' />
           <map key='[name]' value='[competitions].[name]' />
+          <map key='[offensiveRating]' value='[matchclimbs].[offensiveRating]' />
           <map key='[orderID (matchfeeds)]' value='[matchfeeds].[orderID]' />
           <map key='[orderID (matchshoots)]' value='[matchshoots].[orderID]' />
           <map key='[orderID]' value='[matchbreaches].[orderID]' />
-          <map key='[red1]' value='[matches].[red1]' />
-          <map key='[red2]' value='[matches].[red2]' />
-          <map key='[red3]' value='[matches].[red3]' />
+          <map key='[outerDefenseID]' value='[breachDistributions].[outerDefenseID]' />
+          <map key='[position]' value='[teammatches].[position]' />
           <map key='[scoreMiss]' value='[matchshoots].[scoreMiss]' />
+          <map key='[side]' value='[teammatches].[side]' />
           <map key='[startZone]' value='[matchbreaches].[startZone]' />
+          <map key='[teamMatchID (matchclimbs)]' value='[matchclimbs].[teamMatchID]' />
+          <map key='[teamMatchID (matchfeeds)]' value='[matchfeeds].[teamMatchID]' />
+          <map key='[teamMatchID (matchshoots)]' value='[matchshoots].[teamMatchID]' />
+          <map key='[teamMatchID]' value='[matchbreaches].[teamMatchID]' />
           <map key='[teamName]' value='[teams].[teamName]' />
-          <map key='[teamNumber (matchbreaches)]' value='[matchbreaches].[teamNumber]' />
-          <map key='[teamNumber (matchclimbs)]' value='[matchclimbs].[teamNumber]' />
-          <map key='[teamNumber (matchfeeds)]' value='[matchfeeds].[teamNumber]' />
-          <map key='[teamNumber (matchshoots)]' value='[matchshoots].[teamNumber]' />
-          <map key='[teamNumber (teams)]' value='[teams].[teamNumber]' />
-          <map key='[teamNumber]' value='[teamcompetitions].[teamNumber]' />
+          <map key='[teamNumber (Custom SQL Query)]' value='[breachDistributions].[teamNumber]' />
+          <map key='[teamNumber (teammatches)]' value='[teammatches].[teamNumber]' />
+          <map key='[teamNumber]' value='[teams].[teamNumber]' />
           <map key='[zoneID]' value='[matchfeeds].[zoneID]' />
         </cols>
         <metadata-records>
           <metadata-record class='column'>
+            <remote-name>teamNumber</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[teamNumber]</local-name>
+            <parent-name>[teams]</parent-name>
+            <remote-alias>teamNumber</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>teamName</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[teamName]</local-name>
+            <parent-name>[teams]</parent-name>
+            <remote-alias>teamName</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>false</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
             <remote-name>id</remote-name>
             <remote-type>3</remote-type>
             <local-name>[id]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>matchID</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[matchID]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>matchID</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>side</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[side]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>side</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>4</width>
+            <contains-null>false</contains-null>
+            <padded-semantics>true</padded-semantics>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_CHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>position</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[position]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>position</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>teamNumber</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[teamNumber (teammatches)]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>teamNumber</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>deviceID</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[deviceID]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>deviceID</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>10</width>
+            <contains-null>false</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>collectionStarted</remote-name>
+            <remote-type>16</remote-type>
+            <local-name>[collectionStarted]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>collectionStarted</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>3</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>collectionEnded</remote-name>
+            <remote-type>16</remote-type>
+            <local-name>[collectionEnded]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>collectionEnded</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>3</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>matchData</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[matchData]</local-name>
+            <parent-name>[teammatches]</parent-name>
+            <remote-alias>matchData</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>16777215</width>
+            <contains-null>false</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_LONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id (matches)]</local-name>
+            <parent-name>[matches]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>matchNumber</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[matchNumber]</local-name>
+            <parent-name>[matches]</parent-name>
+            <remote-alias>matchNumber</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>compID</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[compID]</local-name>
+            <parent-name>[matches]</parent-name>
+            <remote-alias>compID</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>exported</remote-name>
+            <remote-type>16</remote-type>
+            <local-name>[exported]</local-name>
+            <parent-name>[matches]</parent-name>
+            <remote-alias>exported</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>3</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id (competitions)]</local-name>
             <parent-name>[competitions]</parent-name>
             <remote-alias>id</remote-alias>
-            <ordinal>1</ordinal>
+            <ordinal>21</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
@@ -223,7 +454,7 @@
             <local-name>[name]</local-name>
             <parent-name>[competitions]</parent-name>
             <remote-alias>name</remote-alias>
-            <ordinal>2</ordinal>
+            <ordinal>22</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
             <width>100</width>
@@ -241,7 +472,7 @@
             <local-name>[current]</local-name>
             <parent-name>[competitions]</parent-name>
             <remote-alias>current</remote-alias>
-            <ordinal>3</ordinal>
+            <ordinal>23</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>3</precision>
@@ -257,7 +488,7 @@
             <local-name>[leftSideAlliance]</local-name>
             <parent-name>[competitions]</parent-name>
             <remote-alias>leftSideAlliance</remote-alias>
-            <ordinal>4</ordinal>
+            <ordinal>24</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
             <width>4</width>
@@ -271,290 +502,32 @@
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>teamNumber</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[teamNumber]</local-name>
-            <parent-name>[teamcompetitions]</parent-name>
-            <remote-alias>teamNumber</remote-alias>
-            <ordinal>6</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>compID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[compID]</local-name>
-            <parent-name>[teamcompetitions]</parent-name>
-            <remote-alias>compID</remote-alias>
-            <ordinal>7</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>teamNumber</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[teamNumber (teams)]</local-name>
-            <parent-name>[teams]</parent-name>
-            <remote-alias>teamNumber</remote-alias>
-            <ordinal>10</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>teamName</remote-name>
-            <remote-type>129</remote-type>
-            <local-name>[teamName]</local-name>
-            <parent-name>[teams]</parent-name>
-            <remote-alias>teamName</remote-alias>
-            <ordinal>11</ordinal>
-            <local-type>string</local-type>
-            <aggregation>Count</aggregation>
-            <width>255</width>
-            <contains-null>false</contains-null>
-            <collation charset='280' flag='1' name='LEN_RUS_S2' />
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
-              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>id</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[id (matches)]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>id</remote-alias>
-            <ordinal>13</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>compID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[compID (matches)]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>compID</remote-alias>
-            <ordinal>14</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>red1</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[red1]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>red1</remote-alias>
-            <ordinal>15</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>red2</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[red2]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>red2</remote-alias>
-            <ordinal>16</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>red3</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[red3]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>red3</remote-alias>
-            <ordinal>17</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>blue1</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[blue1]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>blue1</remote-alias>
-            <ordinal>18</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>blue2</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[blue2]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>blue2</remote-alias>
-            <ordinal>19</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>blue3</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[blue3]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>blue3</remote-alias>
-            <ordinal>20</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>exported</remote-name>
-            <remote-type>16</remote-type>
-            <local-name>[exported]</local-name>
-            <parent-name>[matches]</parent-name>
-            <remote-alias>exported</remote-alias>
-            <ordinal>21</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>3</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
             <remote-name>id</remote-name>
             <remote-type>3</remote-type>
             <local-name>[id (matchbreaches)]</local-name>
             <parent-name>[matchbreaches]</parent-name>
             <remote-alias>id</remote-alias>
-            <ordinal>32</ordinal>
+            <ordinal>26</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>actionID</remote-name>
+            <remote-name>teamMatchID</remote-name>
             <remote-type>3</remote-type>
-            <local-name>[actionID]</local-name>
+            <local-name>[teamMatchID]</local-name>
             <parent-name>[matchbreaches]</parent-name>
-            <remote-alias>actionID</remote-alias>
-            <ordinal>33</ordinal>
+            <remote-alias>teamMatchID</remote-alias>
+            <ordinal>27</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>matchID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[matchID]</local-name>
-            <parent-name>[matchbreaches]</parent-name>
-            <remote-alias>matchID</remote-alias>
-            <ordinal>34</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>compID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[compID (matchbreaches)]</local-name>
-            <parent-name>[matchbreaches]</parent-name>
-            <remote-alias>compID</remote-alias>
-            <ordinal>35</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>teamNumber</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[teamNumber (matchbreaches)]</local-name>
-            <parent-name>[matchbreaches]</parent-name>
-            <remote-alias>teamNumber</remote-alias>
-            <ordinal>36</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -566,11 +539,11 @@
             <local-name>[orderID]</local-name>
             <parent-name>[matchbreaches]</parent-name>
             <remote-alias>orderID</remote-alias>
-            <ordinal>37</ordinal>
+            <ordinal>28</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -582,11 +555,11 @@
             <local-name>[mode]</local-name>
             <parent-name>[matchbreaches]</parent-name>
             <remote-alias>mode</remote-alias>
-            <ordinal>38</ordinal>
+            <ordinal>29</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
             <width>4</width>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <padded-semantics>true</padded-semantics>
             <cast-to-local-type>true</cast-to-local-type>
             <collation charset='280' flag='1' name='LEN_RUS_S2' />
@@ -601,11 +574,11 @@
             <local-name>[startZone]</local-name>
             <parent-name>[matchbreaches]</parent-name>
             <remote-alias>startZone</remote-alias>
-            <ordinal>39</ordinal>
+            <ordinal>30</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -617,11 +590,11 @@
             <local-name>[defenseID]</local-name>
             <parent-name>[matchbreaches]</parent-name>
             <remote-alias>defenseID</remote-alias>
-            <ordinal>40</ordinal>
+            <ordinal>31</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -633,7 +606,7 @@
             <local-name>[endZone]</local-name>
             <parent-name>[matchbreaches]</parent-name>
             <remote-alias>endZone</remote-alias>
-            <ordinal>41</ordinal>
+            <ordinal>32</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
@@ -649,11 +622,11 @@
             <local-name>[fail]</local-name>
             <parent-name>[matchbreaches]</parent-name>
             <remote-alias>fail</remote-alias>
-            <ordinal>42</ordinal>
+            <ordinal>33</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>3</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
@@ -665,75 +638,27 @@
             <local-name>[id (matchclimbs)]</local-name>
             <parent-name>[matchclimbs]</parent-name>
             <remote-alias>id</remote-alias>
-            <ordinal>44</ordinal>
+            <ordinal>36</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>actionID</remote-name>
+            <remote-name>teamMatchID</remote-name>
             <remote-type>3</remote-type>
-            <local-name>[actionID (matchclimbs)]</local-name>
+            <local-name>[teamMatchID (matchclimbs)]</local-name>
             <parent-name>[matchclimbs]</parent-name>
-            <remote-alias>actionID</remote-alias>
-            <ordinal>45</ordinal>
+            <remote-alias>teamMatchID</remote-alias>
+            <ordinal>37</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>matchID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[matchID (matchclimbs)]</local-name>
-            <parent-name>[matchclimbs]</parent-name>
-            <remote-alias>matchID</remote-alias>
-            <ordinal>46</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>compID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[compID (matchclimbs)]</local-name>
-            <parent-name>[matchclimbs]</parent-name>
-            <remote-alias>compID</remote-alias>
-            <ordinal>47</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>teamNumber</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[teamNumber (matchclimbs)]</local-name>
-            <parent-name>[matchclimbs]</parent-name>
-            <remote-alias>teamNumber</remote-alias>
-            <ordinal>48</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -745,11 +670,11 @@
             <local-name>[mode (matchclimbs)]</local-name>
             <parent-name>[matchclimbs]</parent-name>
             <remote-alias>mode</remote-alias>
-            <ordinal>49</ordinal>
+            <ordinal>38</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
             <width>4</width>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <padded-semantics>true</padded-semantics>
             <cast-to-local-type>true</cast-to-local-type>
             <collation charset='280' flag='1' name='LEN_RUS_S2' />
@@ -764,11 +689,11 @@
             <local-name>[batterReached]</local-name>
             <parent-name>[matchclimbs]</parent-name>
             <remote-alias>batterReached</remote-alias>
-            <ordinal>50</ordinal>
+            <ordinal>39</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>3</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
@@ -780,11 +705,43 @@
             <local-name>[duration]</local-name>
             <parent-name>[matchclimbs]</parent-name>
             <remote-alias>duration</remote-alias>
-            <ordinal>51</ordinal>
+            <ordinal>40</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>offensiveRating</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[offensiveRating]</local-name>
+            <parent-name>[matchclimbs]</parent-name>
+            <remote-alias>offensiveRating</remote-alias>
+            <ordinal>41</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>defensiveRating</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[defensiveRating]</local-name>
+            <parent-name>[matchclimbs]</parent-name>
+            <remote-alias>defensiveRating</remote-alias>
+            <ordinal>42</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -796,75 +753,27 @@
             <local-name>[id (matchfeeds)]</local-name>
             <parent-name>[matchfeeds]</parent-name>
             <remote-alias>id</remote-alias>
-            <ordinal>53</ordinal>
+            <ordinal>45</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>actionID</remote-name>
+            <remote-name>teamMatchID</remote-name>
             <remote-type>3</remote-type>
-            <local-name>[actionID (matchfeeds)]</local-name>
+            <local-name>[teamMatchID (matchfeeds)]</local-name>
             <parent-name>[matchfeeds]</parent-name>
-            <remote-alias>actionID</remote-alias>
-            <ordinal>54</ordinal>
+            <remote-alias>teamMatchID</remote-alias>
+            <ordinal>46</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>matchID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[matchID (matchfeeds)]</local-name>
-            <parent-name>[matchfeeds]</parent-name>
-            <remote-alias>matchID</remote-alias>
-            <ordinal>55</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>compID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[compID (matchfeeds)]</local-name>
-            <parent-name>[matchfeeds]</parent-name>
-            <remote-alias>compID</remote-alias>
-            <ordinal>56</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>teamNumber</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[teamNumber (matchfeeds)]</local-name>
-            <parent-name>[matchfeeds]</parent-name>
-            <remote-alias>teamNumber</remote-alias>
-            <ordinal>57</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -876,11 +785,11 @@
             <local-name>[orderID (matchfeeds)]</local-name>
             <parent-name>[matchfeeds]</parent-name>
             <remote-alias>orderID</remote-alias>
-            <ordinal>58</ordinal>
+            <ordinal>47</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -892,11 +801,11 @@
             <local-name>[mode (matchfeeds)]</local-name>
             <parent-name>[matchfeeds]</parent-name>
             <remote-alias>mode</remote-alias>
-            <ordinal>59</ordinal>
+            <ordinal>48</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
             <width>4</width>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <padded-semantics>true</padded-semantics>
             <cast-to-local-type>true</cast-to-local-type>
             <collation charset='280' flag='1' name='LEN_RUS_S2' />
@@ -911,11 +820,11 @@
             <local-name>[zoneID]</local-name>
             <parent-name>[matchfeeds]</parent-name>
             <remote-alias>zoneID</remote-alias>
-            <ordinal>60</ordinal>
+            <ordinal>49</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -927,75 +836,27 @@
             <local-name>[id (matchshoots)]</local-name>
             <parent-name>[matchshoots]</parent-name>
             <remote-alias>id</remote-alias>
-            <ordinal>62</ordinal>
+            <ordinal>52</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>actionID</remote-name>
+            <remote-name>teamMatchID</remote-name>
             <remote-type>3</remote-type>
-            <local-name>[actionID (matchshoots)]</local-name>
+            <local-name>[teamMatchID (matchshoots)]</local-name>
             <parent-name>[matchshoots]</parent-name>
-            <remote-alias>actionID</remote-alias>
-            <ordinal>63</ordinal>
+            <remote-alias>teamMatchID</remote-alias>
+            <ordinal>53</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>matchID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[matchID (matchshoots)]</local-name>
-            <parent-name>[matchshoots]</parent-name>
-            <remote-alias>matchID</remote-alias>
-            <ordinal>64</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>compID</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[compID (matchshoots)]</local-name>
-            <parent-name>[matchshoots]</parent-name>
-            <remote-alias>compID</remote-alias>
-            <ordinal>65</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>teamNumber</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[teamNumber (matchshoots)]</local-name>
-            <parent-name>[matchshoots]</parent-name>
-            <remote-alias>teamNumber</remote-alias>
-            <ordinal>66</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -1007,11 +868,11 @@
             <local-name>[orderID (matchshoots)]</local-name>
             <parent-name>[matchshoots]</parent-name>
             <remote-alias>orderID</remote-alias>
-            <ordinal>67</ordinal>
+            <ordinal>54</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -1023,11 +884,11 @@
             <local-name>[mode (matchshoots)]</local-name>
             <parent-name>[matchshoots]</parent-name>
             <remote-alias>mode</remote-alias>
-            <ordinal>68</ordinal>
+            <ordinal>55</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
             <width>4</width>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <padded-semantics>true</padded-semantics>
             <cast-to-local-type>true</cast-to-local-type>
             <collation charset='280' flag='1' name='LEN_RUS_S2' />
@@ -1042,12 +903,12 @@
             <local-name>[coordX]</local-name>
             <parent-name>[matchshoots]</parent-name>
             <remote-alias>coordX</remote-alias>
-            <ordinal>69</ordinal>
+            <ordinal>56</ordinal>
             <local-type>real</local-type>
             <aggregation>Sum</aggregation>
             <precision>7</precision>
             <scale>3</scale>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_DECIMAL&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_NUMERIC&quot;</attribute>
@@ -1059,12 +920,12 @@
             <local-name>[coordY]</local-name>
             <parent-name>[matchshoots]</parent-name>
             <remote-alias>coordY</remote-alias>
-            <ordinal>70</ordinal>
+            <ordinal>57</ordinal>
             <local-type>real</local-type>
             <aggregation>Sum</aggregation>
             <precision>7</precision>
             <scale>3</scale>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_DECIMAL&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_NUMERIC&quot;</attribute>
@@ -1076,11 +937,11 @@
             <local-name>[highLow]</local-name>
             <parent-name>[matchshoots]</parent-name>
             <remote-alias>highLow</remote-alias>
-            <ordinal>71</ordinal>
+            <ordinal>58</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>3</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
@@ -1092,11 +953,11 @@
             <local-name>[scoreMiss]</local-name>
             <parent-name>[matchshoots]</parent-name>
             <remote-alias>scoreMiss</remote-alias>
-            <ordinal>72</ordinal>
+            <ordinal>59</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>3</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TINYINT&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_STINYINT&quot;</attribute>
@@ -1106,13 +967,13 @@
             <remote-name>id</remote-name>
             <remote-type>3</remote-type>
             <local-name>[id (defenses)]</local-name>
-            <parent-name>[breachDefenses]</parent-name>
+            <parent-name>[defenses]</parent-name>
             <remote-alias>id</remote-alias>
-            <ordinal>74</ordinal>
+            <ordinal>62</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
             <precision>10</precision>
-            <contains-null>false</contains-null>
+            <contains-null>true</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
               <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
@@ -1122,9 +983,180 @@
             <remote-name>name</remote-name>
             <remote-type>129</remote-type>
             <local-name>[name (defenses)]</local-name>
-            <parent-name>[breachDefenses]</parent-name>
+            <parent-name>[defenses]</parent-name>
             <remote-alias>name</remote-alias>
-            <ordinal>75</ordinal>
+            <ordinal>63</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>100</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>category</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[category]</local-name>
+            <parent-name>[defenses]</parent-name>
+            <remote-alias>category</remote-alias>
+            <ordinal>64</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>5</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>img</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[img]</local-name>
+            <parent-name>[defenses]</parent-name>
+            <remote-alias>img</remote-alias>
+            <ordinal>65</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>200</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id (breachStartZones)]</local-name>
+            <parent-name>[breachStartZones]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>67</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[name (breachStartZones)]</local-name>
+            <parent-name>[breachStartZones]</parent-name>
+            <remote-alias>name</remote-alias>
+            <ordinal>68</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>50</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id (breachEndZones)]</local-name>
+            <parent-name>[breachEndZones]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>70</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[name (breachEndZones)]</local-name>
+            <parent-name>[breachEndZones]</parent-name>
+            <remote-alias>name</remote-alias>
+            <ordinal>71</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>50</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id (feedZones)]</local-name>
+            <parent-name>[feedZones]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>73</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[name (feedZones)]</local-name>
+            <parent-name>[feedZones]</parent-name>
+            <remote-alias>name</remote-alias>
+            <ordinal>74</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>50</width>
+            <contains-null>true</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>outerDefenseID</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[outerDefenseID]</local-name>
+            <parent-name>[breachDistributions]</parent-name>
+            <remote-alias>outerDefenseID</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[name (Custom SQL Query)]</local-name>
+            <parent-name>[breachDistributions]</parent-name>
+            <remote-alias>name</remote-alias>
+            <ordinal>2</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
             <width>100</width>
@@ -1137,51 +1169,14 @@
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>category</remote-name>
-            <remote-type>129</remote-type>
-            <local-name>[category]</local-name>
-            <parent-name>[breachDefenses]</parent-name>
-            <remote-alias>category</remote-alias>
-            <ordinal>76</ordinal>
-            <local-type>string</local-type>
-            <aggregation>Count</aggregation>
-            <width>5</width>
-            <contains-null>false</contains-null>
-            <collation charset='280' flag='1' name='LEN_RUS_S2' />
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
-              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>img</remote-name>
-            <remote-type>129</remote-type>
-            <local-name>[img]</local-name>
-            <parent-name>[breachDefenses]</parent-name>
-            <remote-alias>img</remote-alias>
-            <ordinal>77</ordinal>
-            <local-type>string</local-type>
-            <aggregation>Count</aggregation>
-            <width>200</width>
-            <contains-null>false</contains-null>
-            <collation charset='280' flag='1' name='LEN_RUS_S2' />
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
-              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>id</remote-name>
+            <remote-name>teamNumber</remote-name>
             <remote-type>3</remote-type>
-            <local-name>[id (zones)]</local-name>
-            <parent-name>[breachStartZones]</parent-name>
-            <remote-alias>id</remote-alias>
-            <ordinal>79</ordinal>
+            <local-name>[teamNumber (Custom SQL Query)]</local-name>
+            <parent-name>[breachDistributions]</parent-name>
+            <remote-alias>teamNumber</remote-alias>
+            <ordinal>3</ordinal>
             <local-type>integer</local-type>
             <aggregation>Sum</aggregation>
-            <precision>10</precision>
             <contains-null>false</contains-null>
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
@@ -1189,15 +1184,15 @@
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>name</remote-name>
+            <remote-name>direction</remote-name>
             <remote-type>129</remote-type>
-            <local-name>[name (zones)]</local-name>
-            <parent-name>[breachStartZones]</parent-name>
-            <remote-alias>name</remote-alias>
-            <ordinal>80</ordinal>
+            <local-name>[direction]</local-name>
+            <parent-name>[breachDistributions]</parent-name>
+            <remote-alias>direction</remote-alias>
+            <ordinal>4</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
-            <width>50</width>
+            <width>18</width>
             <contains-null>false</contains-null>
             <collation charset='280' flag='1' name='LEN_RUS_S2' />
             <attributes>
@@ -1207,71 +1202,20 @@
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>id</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[id (zones) #1]</local-name>
-            <parent-name>[breachEndZones]</parent-name>
-            <remote-alias>id</remote-alias>
-            <ordinal>82</ordinal>
-            <local-type>integer</local-type>
+            <remote-name>breachDefenseCount</remote-name>
+            <remote-type>131</remote-type>
+            <local-name>[breachDefenseCount]</local-name>
+            <parent-name>[breachDistributions]</parent-name>
+            <remote-alias>breachDefenseCount</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>real</local-type>
             <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
+            <precision>42</precision>
+            <scale>0</scale>
+            <contains-null>true</contains-null>
             <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>name</remote-name>
-            <remote-type>129</remote-type>
-            <local-name>[name (zones) #1]</local-name>
-            <parent-name>[breachEndZones]</parent-name>
-            <remote-alias>name</remote-alias>
-            <ordinal>83</ordinal>
-            <local-type>string</local-type>
-            <aggregation>Count</aggregation>
-            <width>50</width>
-            <contains-null>false</contains-null>
-            <collation charset='280' flag='1' name='LEN_RUS_S2' />
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
-              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>id</remote-name>
-            <remote-type>3</remote-type>
-            <local-name>[id (zones) #2]</local-name>
-            <parent-name>[feedZones]</parent-name>
-            <remote-alias>id</remote-alias>
-            <ordinal>85</ordinal>
-            <local-type>integer</local-type>
-            <aggregation>Sum</aggregation>
-            <precision>10</precision>
-            <contains-null>false</contains-null>
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
-            </attributes>
-          </metadata-record>
-          <metadata-record class='column'>
-            <remote-name>name</remote-name>
-            <remote-type>129</remote-type>
-            <local-name>[name (zones) #2]</local-name>
-            <parent-name>[feedZones]</parent-name>
-            <remote-alias>name</remote-alias>
-            <ordinal>86</ordinal>
-            <local-type>string</local-type>
-            <aggregation>Count</aggregation>
-            <width>50</width>
-            <contains-null>false</contains-null>
-            <collation charset='280' flag='1' name='LEN_RUS_S2' />
-            <attributes>
-              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
-              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
-              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_DECIMAL&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_NUMERIC&quot;</attribute>
             </attributes>
           </metadata-record>
         </metadata-records>
@@ -1280,72 +1224,72 @@
       <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
         <calculation class='tableau' formula='1' />
       </column>
-      <column datatype='integer' name='[actionID (matchclimbs)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[actionID (matchfeeds)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[actionID (matchshoots)]' role='dimension' type='ordinal' />
-      <column caption='Action ID' datatype='integer' name='[actionID]' role='dimension' type='ordinal' />
-      <column caption='Batter Reached' datatype='integer' name='[batterReached]' role='measure' type='quantitative' />
-      <column aggregation='Sum' caption='Blue1' datatype='integer' name='[blue1]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' caption='Blue2' datatype='integer' name='[blue2]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' caption='Blue3' datatype='integer' name='[blue3]' role='dimension' type='ordinal' />
       <column caption='Category' datatype='string' name='[category]' role='dimension' type='nominal' />
-      <column datatype='integer' name='[compID (matchbreaches)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[compID (matchclimbs)]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' datatype='integer' name='[compID (matches)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[compID (matchfeeds)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[compID (matchshoots)]' role='dimension' type='ordinal' />
+      <column caption='Collection Ended' datatype='integer' name='[collectionEnded]' role='measure' type='quantitative' />
+      <column caption='Collection Started' datatype='integer' name='[collectionStarted]' role='measure' type='quantitative' />
       <column aggregation='Sum' caption='Comp ID' datatype='integer' name='[compID]' role='dimension' type='ordinal' />
       <column caption='Coord X' datatype='real' name='[coordX]' role='measure' type='quantitative' />
       <column caption='Coord Y' datatype='real' name='[coordY]' role='measure' type='quantitative' />
       <column caption='Current' datatype='integer' name='[current]' role='measure' type='quantitative' />
       <column caption='Defense ID' datatype='integer' name='[defenseID]' role='dimension' type='ordinal' />
-      <column caption='Duration' datatype='integer' name='[duration]' role='measure' type='quantitative' />
+      <column caption='Device ID' datatype='string' name='[deviceID]' role='dimension' type='nominal' />
+      <column datatype='string' name='[direction]' role='dimension' type='nominal' />
       <column caption='End Zone' datatype='integer' name='[endZone]' role='measure' type='quantitative' />
       <column caption='Exported' datatype='integer' name='[exported]' role='measure' type='quantitative' />
       <column caption='Fail' datatype='integer' name='[fail]' role='measure' type='quantitative' />
       <column caption='High Low' datatype='integer' name='[highLow]' role='measure' type='quantitative' />
+      <column caption='Id (breachEndZones) #1' datatype='integer' name='[id (breachEndZones)]' role='dimension' type='ordinal' />
+      <column caption='Id (breachStartZones)' datatype='integer' name='[id (breachStartZones)]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' caption='Id (Competitions)' datatype='integer' name='[id (competitions)]' role='dimension' type='ordinal' />
       <column caption='Id (Defenses)' datatype='integer' name='[id (defenses)]' role='dimension' type='ordinal' />
+      <column caption='Id (feedZones) #2' datatype='integer' name='[id (feedZones)]' role='dimension' type='ordinal' />
       <column caption='Id (Matchbreaches)' datatype='integer' name='[id (matchbreaches)]' role='dimension' type='ordinal' />
-      <column caption='Id (Matchclimbs)' datatype='integer' name='[id (matchclimbs)]' role='dimension' type='ordinal' />
       <column caption='Id (Matches)' datatype='integer' name='[id (matches)]' role='dimension' type='ordinal' />
       <column caption='Id (Matchfeeds)' datatype='integer' name='[id (matchfeeds)]' role='dimension' type='ordinal' />
       <column caption='Id (Matchshoots)' datatype='integer' name='[id (matchshoots)]' role='dimension' type='ordinal' />
-      <column caption='Id (Zones) #1' datatype='integer' name='[id (zones) #1]' role='dimension' type='ordinal' />
-      <column caption='Id (Zones) #2' datatype='integer' name='[id (zones) #2]' role='dimension' type='ordinal' />
-      <column caption='Id (Zones)' datatype='integer' name='[id (zones)]' role='dimension' type='ordinal' />
       <column caption='Id' datatype='integer' name='[id]' role='dimension' type='ordinal' />
       <column caption='Img' datatype='string' name='[img]' role='dimension' type='nominal' />
       <column caption='Left Side Alliance' datatype='string' name='[leftSideAlliance]' role='dimension' type='nominal' />
-      <column datatype='integer' name='[matchID (matchclimbs)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[matchID (matchfeeds)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[matchID (matchshoots)]' role='dimension' type='ordinal' />
+      <column caption='Match Data' datatype='string' name='[matchData]' role='dimension' type='nominal' />
       <column caption='Match ID' datatype='integer' name='[matchID]' role='dimension' type='ordinal' />
-      <column caption='Mode (Matchclimbs)' datatype='string' name='[mode (matchclimbs)]' role='dimension' type='nominal' />
+      <column caption='Match Number' datatype='integer' name='[matchNumber]' role='dimension' type='ordinal' />
       <column caption='Mode (Matchfeeds)' datatype='string' name='[mode (matchfeeds)]' role='dimension' type='nominal' />
       <column caption='Mode (Matchshoots)' datatype='string' name='[mode (matchshoots)]' role='dimension' type='nominal' />
       <column caption='Mode' datatype='string' name='[mode]' role='dimension' type='nominal' />
+      <column caption='Name (breachEndZones)' datatype='string' name='[name (breachEndZones)]' role='dimension' type='nominal' />
+      <column caption='Name (breachStartZones)' datatype='string' name='[name (breachStartZones)]' role='dimension' type='nominal' />
       <column caption='Name (Defenses)' datatype='string' name='[name (defenses)]' role='dimension' type='nominal' />
-      <column caption='Name (Zones) #1' datatype='string' name='[name (zones) #1]' role='dimension' type='nominal' />
-      <column caption='Name (Zones) #2' datatype='string' name='[name (zones) #2]' role='dimension' type='nominal' />
-      <column caption='Name (Zones)' datatype='string' name='[name (zones)]' role='dimension' type='nominal' />
+      <column caption='Name (feedZones)' datatype='string' name='[name (feedZones)]' role='dimension' type='nominal' />
       <column caption='Name' datatype='string' name='[name]' role='dimension' type='nominal' />
       <column datatype='integer' name='[orderID (matchfeeds)]' role='dimension' type='ordinal' />
       <column datatype='integer' name='[orderID (matchshoots)]' role='dimension' type='ordinal' />
       <column caption='Order ID' datatype='integer' name='[orderID]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' caption='Red1' datatype='integer' name='[red1]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' caption='Red2' datatype='integer' name='[red2]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' caption='Red3' datatype='integer' name='[red3]' role='dimension' type='ordinal' />
+      <column caption='Position' datatype='integer' name='[position]' role='measure' type='quantitative' />
       <column caption='Score Miss' datatype='integer' name='[scoreMiss]' role='measure' type='quantitative' />
+      <column caption='Side' datatype='string' name='[side]' role='dimension' type='nominal' />
       <column caption='Start Zone' datatype='integer' name='[startZone]' role='measure' type='quantitative' />
+      <column aggregation='Sum' datatype='integer' name='[teamMatchID (matchclimbs)]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' datatype='integer' name='[teamMatchID (matchfeeds)]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' datatype='integer' name='[teamMatchID (matchshoots)]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' caption='Team Match ID' datatype='integer' name='[teamMatchID]' role='dimension' type='ordinal' />
       <column caption='Team Name' datatype='string' name='[teamName]' role='dimension' type='nominal' />
-      <column datatype='integer' name='[teamNumber (matchbreaches)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[teamNumber (matchclimbs)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[teamNumber (matchfeeds)]' role='dimension' type='ordinal' />
-      <column datatype='integer' name='[teamNumber (matchshoots)]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' datatype='integer' name='[teamNumber (teams)]' role='dimension' type='ordinal' />
-      <column aggregation='Sum' caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
+      <column aggregation='Sum' datatype='integer' name='[teamNumber (teammatches)]' role='dimension' type='ordinal' />
+      <column caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
       <column caption='Zone ID' datatype='integer' name='[zoneID]' role='dimension' type='ordinal' />
-      <layout dim-ordering='alphabetic' dim-percentage='0.627737' measure-ordering='alphabetic' measure-percentage='0.372263' show-structure='true' />
+      <column-instance column='[direction]' derivation='None' name='[none:direction:nk]' pivot='key' type='nominal' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.416149' measure-ordering='alphabetic' measure-percentage='0.583851' show-structure='true' user-set-layout='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[none:direction:nk]' type='palette'>
+            <map to='#1f77b4'>
+              <bucket>&quot;Away From Opponent&quot;</bucket>
+            </map>
+            <map to='#ff7f0e'>
+              <bucket>&quot;Toward Opponent&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
       <semantic-values>
         <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
       </semantic-values>
@@ -1355,7 +1299,25 @@
     <worksheet name='Sheet 1'>
       <table>
         <view>
-          <datasources />
+          <datasources>
+            <datasource caption='teams+ (scouting2016)' name='mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0' />
+          </datasources>
+          <datasource-dependencies datasource='mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0'>
+            <column-instance column='[breachDefenseCount]' derivation='Attribute' name='[attr:breachDefenseCount:qk]' pivot='key' type='quantitative' />
+            <column datatype='real' name='[breachDefenseCount]' role='measure' type='quantitative' />
+            <column datatype='string' name='[direction]' role='dimension' type='nominal' />
+            <column datatype='string' name='[name (Custom SQL Query)]' role='dimension' type='nominal' />
+            <column-instance column='[direction]' derivation='None' name='[none:direction:nk]' pivot='key' type='nominal' />
+            <column-instance column='[name (Custom SQL Query)]' derivation='None' name='[none:name (Custom SQL Query):nk]' pivot='key' type='nominal' />
+            <column-instance column='[teamNumber]' derivation='None' name='[none:teamNumber:ok]' pivot='key' type='ordinal' />
+            <column caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:teamNumber:ok]'>
+            <groupfilter function='member' level='[none:teamNumber:ok]' member='1756' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:teamNumber:ok]</column>
+          </slices>
           <aggregation value='true' />
         </view>
         <style />
@@ -1365,14 +1327,17 @@
               <breakdown value='auto' />
             </view>
             <mark class='Automatic' />
+            <encodings>
+              <color column='[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:direction:nk]' />
+            </encodings>
           </pane>
         </panes>
-        <rows />
-        <cols />
+        <rows>[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[attr:breachDefenseCount:qk]</rows>
+        <cols>([mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:teamNumber:ok] / [mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:name (Custom SQL Query):nk])</cols>
       </table>
     </worksheet>
   </worksheets>
-  <windows source-height='28'>
+  <windows source-height='32'>
     <window class='worksheet' maximized='true' name='Sheet 1'>
       <cards>
         <edge name='left'>
@@ -1380,6 +1345,7 @@
             <card type='pages' />
             <card type='filters' />
             <card type='marks' />
+            <card pane-specification-id='0' param='[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:direction:nk]' type='color' />
           </strip>
         </edge>
         <edge name='top'>
@@ -1390,21 +1356,154 @@
             <card type='rows' />
           </strip>
         </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card param='[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:teamNumber:ok]' type='filter' />
+          </strip>
+        </edge>
       </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:direction:nk]</field>
+            <field>[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:name (Custom SQL Query):nk]</field>
+            <field>[mysql.0lsdu5y1xo5m3b1guq2ra0pr39x0].[none:teamNumber:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
     </window>
   </windows>
   <thumbnails>
-    <thumbnail height='144' name='Sheet 1' width='174'>
-      iVBORw0KGgoAAAANSUhEUgAAAK4AAACQCAYAAACRfFAzAAAACXBIWXMAAA7DAAAOwwHHb6hk
-      AAABmUlEQVR4nO3SQQ0AIBDAMMC/58MDH7KkVbDH9szMgpjzOwBeGJck45JkXJKMS5JxSTIu
-      ScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45Jk
-      XJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYl
-      ybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKM
-      S5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgk
-      GZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5Jx
-      STIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuScYlybgkGZck
-      45JkXJKMS5JxSTIuScYlybgkGZck45JkXJKMS5JxSTIuSRePYgUc7kJNEQAAAABJRU5ErkJg
-      gg==
+    <thumbnail height='192' name='Sheet 1' width='192'>
+      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
     </thumbnail>
   </thumbnails>
 </workbook>

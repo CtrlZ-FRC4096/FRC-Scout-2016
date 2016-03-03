@@ -45,14 +45,9 @@ class Competition {
     foreach($result as $row){
       $match = new Match(null,null);
       $match->id = $row['id'];
+      $match->matchNumber = $row['matchNumber'];
       $match->compID = $row['compID'];
-      $match->red1 = $row['red1'];
-      $match->red2 = $row['red2'];
-      $match->red3 = $row['red3'];
-      $match->blue1 = $row['blue1'];
-      $match->blue2 = $row['blue2'];
-      $match->blue3 = $row['blue3'];
-      $match->getDefenses();
+      $match->getInfo();
       array_push($this->matches,$match);
     }
 
@@ -60,23 +55,24 @@ class Competition {
 
   public function getLastMatchWithData(){
 
-    $query = "SELECT MAX(matchID) as matchID FROM
-          (
-            SELECT MAX(matchID) as matchID FROM matchFeeds WHERE compID = :compID UNION
-            SELECT MAX(matchID) as matchID FROM matchBreaches WHERE compID = :compID1 UNION
-            SELECT MAX(matchID) as matchID FROM matchShoots WHERE compID = :compID2 UNION
-            SELECT MAX(matchID) as matchID FROM matchClimbs WHERE compID = :compID3) as a";
+    $query = "  SELECT MAX(matches.matchNumber) as matchNumber
+                FROM(
+                    SELECT teamMatchID FROM matchBreaches UNION
+                    SELECT teamMatchID FROM matchClimbs UNION
+                    SELECT teamMatchID FROM matchFeeds UNION
+                    SELECT teamMatchID FROM matchShoots
+                ) as a
+                JOIN teammatches ON teammatches.id = a.teamMatchID
+                JOIN matches ON matches.id = teammatches.matchID
+                WHERE matches.compID = :compID";
 
     $params = array(
-      ":compID" => $this->id,
-      ":compID1" => $this->id,
-      ":compID2" => $this->id,
-      ":compID3" => $this->id
+      ":compID" => $this->id
     );
     $result = $this->helper->queryDB($query,$params,false);
 //    var_dump($result);
-    if(intval($result[0]['matchID']) > 0){
-      return new Match($result[0]['matchID'],$this->id);
+    if(intval($result[0]['matchNumber']) > 0){
+      return new Match($result[0]['matchNumber'],$this->id);
 
     }
     else{
@@ -88,8 +84,16 @@ class Competition {
 
 }
 
-  public function getLastExportedMatchID(){
-    $query = "SELECT MAX(id) as matchID FROM matches WHERE compID = :compID";
+  public function getLastMatchID(){
+    $query = "SELECT MAX(matchNumber) as matchNumber FROM matches WHERE compID = :compID";
+    $params = array(":compID" => $this->id);
+    $result = $this->helper->queryDB($query,$params,false);
+    return $result[0]['matchNumber'];
+  }
+
+
+  public function getLastExportedMatchNumber(){
+    $query = "SELECT MAX(matchNumber) as matchNumber FROM matches WHERE compID = :compID AND exported = 1";
     $params = array(":compID" => $this->id);
     $result = $this->helper->queryDB($query,$params,false);
     if(count($result) == 0){
@@ -97,7 +101,7 @@ class Competition {
 
     }
     else{
-      return $result[0]["matchID"];
+      return $result[0]["matchNumber"];
     }
   }
 

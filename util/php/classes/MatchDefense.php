@@ -13,7 +13,6 @@ class MatchDefense {
   public $name;
   public $category;
   public $img;
-  public $compID;
   public $matchID;
   public $side;
   public $slot;
@@ -25,10 +24,9 @@ class MatchDefense {
   }
 
   public function insert(){
-    $query = "INSERT INTO matchDefenses( compID, matchID, side, slot, defenseID)
-                                VALUES (:compID,:matchID,:side,:slot,:defenseID)";
+    $query = "INSERT INTO matchDefenses(matchID, side, slot, defenseID)
+                                VALUES (:matchID,:side,:slot,:defenseID)";
     $params = array(
-      ":compID" => $this->compID,
       ":matchID" => $this->matchID,
       ":side" => $this->side,
       ":slot" => $this->slot,

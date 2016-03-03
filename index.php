@@ -7,14 +7,28 @@ $currCompetition = $helper->getCurrentCompetition();
 if(isset($_COOKIE['deviceID'])){
 
   $status = $helper->getCurrentStatusOfUser($_COOKIE['deviceID'],$currCompetition->id);
+  if(strpos($status ,"teamSelection") !== false){
 
+    unset($_COOKIE["matchData"]);
+// empty value and expiration one hour before
+    $res = setcookie("matchData", '', time() - 3600);
 
-  if($status == "teamSelection"){
+    if(strpos($status,"-")){
+      $arr = explode("-",$status);
+      $WAITING_FOR_CONFIG = true;
+      $WAITING_ON_TEAM = intval($arr[1]);
+      $match = new Match(intval($arr[2]),intval($currCompetition->id));
+    }
+    else{
+      $WAITING_FOR_CONFIG = false;
+      $WAITING_ON_TEAM = null;
+    }
+
     require_once("teamSelection.php");
   }
   else{
     $arr = explode("-",$status);
-    $match = new Match($arr[1],$currCompetition->id);
+    $match = new Match(intval($arr[1]),intval($currCompetition->id));
     if($match->isConfigured()){
       require_once("matchScouting.php");
     }

@@ -1,5 +1,2 @@
-1. "Escape" feature for breaching
-3. Escape feature for shooting.
-6. End Game
-7. "Abort" match
-8. generateJSON on delete histroy item, and drag history item
+1. Touchscreen compatible for breach page.
+2. Export / Import

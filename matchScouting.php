@@ -5,31 +5,21 @@
  * Date: 2/9/2016
  * Time: 8:47 PM
  */
-$SCOUTING_TEAM = $match->getClaimedTeamForDevice($_COOKIE['deviceID']);
+$SCOUTING_TEAM_MATCH = $match->getClaimedTeamMatchForDevice($_COOKIE['deviceID']);
+$SCOUTING_TEAM = $SCOUTING_TEAM_MATCH['teamNumber'];
+$SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
+
 
 if (isset($_COOKIE['matchData'])) {
   $RESUMING_MATCH = true;
 } else {
   $RESUMING_MATCH = false;
-  $helper->setCollectionStarted($currCompetition->id, $match->id, $SCOUTING_TEAM);
-}
-
-switch ($SCOUTING_TEAM) {
-  case $match->blue1:
-  case $match->blue2:
-  case $match->blue3:
-    $SCOUTING_TEAM_COLOR = "blue";
-    break;
-  case $match->red1:
-  case $match->red2:
-  case $match->red3:
-    $SCOUTING_TEAM_COLOR = "red";
-    break;
+  $helper->setCollectionStarted($match->id, $SCOUTING_TEAM);
 }
 ?>
 
 <!DOCTYPE HTML>
-<html>
+<html style="overflow-x: hidden">
 <head>
 
   <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/client_includes.php"); ?>
@@ -41,20 +31,18 @@ switch ($SCOUTING_TEAM) {
       margin: 0;
       padding: 5%;
     }
-
     #taskSwitcher div {
       padding: 0;
+      cursor: pointer;
     }
-
     .orange {
       background-color: #FF7F2A
-    }
 
+    }
     .darkBlue {
       background-color: #2A7FFF
 
     }
-
     #taskSwitcher div::after {
       width: 0;
       height: 0;
@@ -63,19 +51,15 @@ switch ($SCOUTING_TEAM) {
       content: "";
       display: none;
     }
-
     #taskSwitcher div[data-color='darkBlue']::after {
       border-top: 20px solid #2A7FFF;
     }
-
     #taskSwitcher div[data-color='orange']::after {
       border-top: 20px solid #FF7F2A;
     }
-
     #taskSwitcher div.active::after {
       display: inline-block;
     }
-
     .historyItem {
       width: 100%;
       height: 50px;
@@ -84,7 +68,6 @@ switch ($SCOUTING_TEAM) {
       align-items: center;
       justify-content: center;
     }
-
     #breachPage .defense {
       position: relative;
       display: flex;
@@ -96,7 +79,6 @@ switch ($SCOUTING_TEAM) {
       overflow: hidden;
       align-items: center;
     }
-
     #breachPage .imageContainer {
       background-size: contain;
       background-repeat: no-repeat;
@@ -110,7 +92,6 @@ switch ($SCOUTING_TEAM) {
       flex-direction: row;
       width: 100%;
     }
-
     #breachPage .circleContainer {
       display: flex;
       flex-direction: row;
@@ -121,11 +102,9 @@ switch ($SCOUTING_TEAM) {
       display: flex;
       align-items: center;
     }
-
     #breachPage .yellowSide .sideCircleContainer .circle.startBreachCircle {
       background-color: orange !important;
     }
-
     #breachPage .defenseCircleContainer {
       position: absolute;
       left: 0;
@@ -133,33 +112,26 @@ switch ($SCOUTING_TEAM) {
       right: 0;
       bottom: 0
     }
-
     #breachPage .defenseCircleContainer .circle {
       display: none;
     }
-
     #breachPage .defenseCircleContainer .circle h4 {
       color: white;
     }
-
     #breachPage .sideCircleContainer {
       height: 10px;
     }
-
     #breachPage .circleContainer .circle {
       width: 90%;
       margin: 0 auto;
       display: none;
     }
-
     #breachPage .circleContainer .circle h4 {
       text-align: center;
     }
-
     .circle {
       border-radius: 50%;
     }
-
     .blurred {
       filter: blur(3px);
       -webkit-filter: blur(3px);
@@ -169,7 +141,35 @@ switch ($SCOUTING_TEAM) {
   </style>
 
 </head>
+<?php
+if($RESUMING_MATCH){
+?>
+<div id="resumingMatchNotice" style="
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      z-index: 15;">
 
+  <h2 style="width: 100%;text-align: center;font-size: 50px">Resuming Match...</h2>
+</div>
+
+<?php } ?>
+
+
+<div id="redirectingNotice" style="
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display:none;
+      align-items: center;
+      z-index: 15;">
+
+  <h2 style="width: 100%;text-align: center;font-size: 50px">Redirecting...</h2>
+</div>
 <body style="height: 100%;display: flex;flex-direction: column">
 
 <div class="row">
@@ -181,8 +181,11 @@ switch ($SCOUTING_TEAM) {
 
     <h2 id="modeHeading" data-mode="auto" style="/* float: left; */color: white;margin: 12px;margin-right: 24px; margin-left: 24px;">AUTO MODE</h2>
 
-    <h2 style="float: right;color: white;margin: 12px;margin-right: 24px; margin-left: 24px;">Match <?= $match->id ?>
-      - <?= $currCompetition->name ?></h2>
+    <h2 style="float: right;color: white;margin: 12px;margin-right: 24px; margin-left: 24px;">Match <?= $match->matchNumber ?>
+      - <?= $currCompetition->name ?>
+
+      <a id="abortMatchConfirm" style="border:2px solid black;margin: 0 auto;margin-left:10px" href="#" class="button button-pill button-caution button-large">Abort Match</a>
+    </h2>
 
   </div>
 </div>
@@ -217,7 +220,7 @@ switch ($SCOUTING_TEAM) {
 
     </div>
     <div id="breachPage" style="display:flex;flex: 0;width: 0;height: 0;overflow: hidden">
-      <div style="display: flex;flex-direction: row;width: 75%;margin: 16px; border: 3px solid black;">
+      <div id="breachMap" style="display: flex;flex-direction: row;width: 75%;margin: 16px; border: 3px solid black;">
 
         <div zone-id="<?= ($helper->LEFT_TEAM == "red" ? 4 : 1) ?>"
              zone-name="<?= ($helper->LEFT_TEAM == "red" ? "Red Home" : "Blue Home") ?>"
@@ -231,11 +234,11 @@ switch ($SCOUTING_TEAM) {
 
               echo <<<EOT
 
-<div class="circleContainer sideCircleContainer">
-              <div class="circle startBreachCircle" style="background-color: orange;">
+<div class="circleContainer sideCircleContainer" style="cursor: pointer;">
+              <div class="circle startBreachCircle" style="background-color: orange;;cursor: pointer;">
                 <h4>Start</h4>
               </div>
-              <div class="circle backOutFromBreachCircle" style="background-color: purple;">
+              <div class="circle backOutFromBreachCircle" style="background-color: purple;;cursor: pointer;">
                 <h4 style="color: white">End</h4>
               </div>
             </div>
@@ -258,7 +261,7 @@ EOT;
           for ($i = 5; $i >= 2; $i--) {
             $defense = $match->getDefenseAt($helper->LEFT_TEAM, $i);
 
-            echo '<div class="defense" defense-id="' . $defense->id . '"  defense-name="' . $defense->name . '"  > <div style="background-image: url(\'/util/img/defenses/' . $defense->img . '\');" class="imageContainer"></div> <div class="circleContainer defenseCircleContainer"> <div class="circle defenseCircle" style=\'background-color: green;\'> <h4>Try</h4> </div> </div> </div>';
+            echo '<div class="defense" defense-id="' . $defense->id . '"  defense-name="' . $defense->name . '"  > <div style="background-image: url(\'/util/img/defenses/' . $defense->img . '\');" class="imageContainer"></div> <div style="cursor: pointer;" class="circleContainer defenseCircleContainer"> <div class="circle defenseCircle" style=\'background-color: green;\'> <h4>Try</h4> </div> </div> </div>';
           }
 
 
@@ -266,7 +269,7 @@ EOT;
 
           <div class="defense" defense-id="9" defense-name="Low Bar">
             <div style="background-image: url('/util/img/defenses/lowbar.jpg');" class="imageContainer"></div>
-            <div class="circleContainer defenseCircleContainer">
+            <div class="circleContainer defenseCircleContainer" style="cursor: pointer;">
               <div class="circle defenseCircle" style='background-color: green;'><h4>Try</h4></div>
             </div>
           </div>
@@ -284,7 +287,7 @@ EOT;
              style="border: 3px solid black;border-width: 0 3px 0 3px;   display: flex; flex-direction: column;">
           <div class="defense" defense-id="9" defense-name="Low Bar">
             <div style="background-image: url('/util/img/defenses/lowbar.jpg');" class="imageContainer"></div>
-            <div class="circleContainer defenseCircleContainer">
+            <div class="circleContainer defenseCircleContainer" style="cursor: pointer;">
               <div class="circle defenseCircle" style='background-color: green;'><h4>Try</h4></div>
             </div>
           </div>
@@ -294,7 +297,7 @@ EOT;
           for ($i = 2; $i <= 5; $i++) {
             $defense = $match->getDefenseAt($helper->RIGHT_TEAM, $i);
 
-            echo '<div class="defense" defense-id="' . $defense->id . '"  defense-name="' . $defense->name . '"  > <div style="background-image: url(\'/util/img/defenses/' . $defense->img . '\');" class="imageContainer"></div> <div class="circleContainer defenseCircleContainer"> <div class="circle defenseCircle" style=\'background-color: green;\'> <h4>Try</h4> </div> </div> </div>';
+            echo '<div class="defense" defense-id="' . $defense->id . '"  defense-name="' . $defense->name . '"  > <div style="cursor: pointer;background-image: url(\'/util/img/defenses/' . $defense->img . '\');" class="imageContainer"></div> <div style="cursor: pointer;" class="circleContainer defenseCircleContainer"> <div class="circle defenseCircle" style=\'background-color: green;\'> <h4>Try</h4> </div> </div> </div>';
           }
 
           ?>
@@ -311,9 +314,11 @@ EOT;
 
       </div>
 
-      <div style="    display: flex; flex-direction: column; width: 25%; align-items: center; flex-flow: row;">
-
-        <div id="breachStuck" style="    width: 80%; height: 43%; margin: 0 auto; background-color: red; flex: 0 1 85%;">
+      <div style="position:relative;display: flex; flex-direction: column; width: 25%; align-items: center; flex-flow: row;">
+        <a id="cancelBreach"
+           style="border:2px solid black;position: absolute;margin-top:16px"
+           class="button button-pill button-caution ">Cancel</a>
+        <div id="breachStuck" style="cursor:pointer;width: 80%; height: 43%; margin: 0 auto; background-color: red; flex: 0 1 85%;">
           <h2 style="text-align: center;color: white;font-weight: bold;margin: 40px 0 40px 0;">Got Stuck!</h2></div>
 
       </div>
@@ -329,12 +334,14 @@ EOT;
                   data="/util/svg/<?= ($SCOUTING_TEAM_COLOR == "red" ? "blue" : "red") . ($helper->LEFT_TEAM == $SCOUTING_TEAM_COLOR ? "Right" : "Left") ?>Shoot.svg"></object>
         </div>
 
-        <div style="display: flex;flex-direction: column;width: 40%;">
+        <div style="position:relative;display: flex;flex-direction: column;width: 40%;">
+          <a id="cancelShoot"
+             style="border:2px solid black;position: absolute;margin-top:16px;margin-left:16px"
+             class="button button-pill button-caution ">Cancel</a>
 
-          <div style="    display: flex; flex-direction: column; width: 80%; flex-flow: column; height: 10px; margin: 0 auto; flex: 1 0 100%; justify-content: center; align-items: center;">
-
+          <div style="display: flex; flex-direction: column; width: 80%; flex-flow: column; height: 10px; margin: 0 auto; flex: 1 0 100%; justify-content: center; align-items: center;">
             <div
-              style="display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;">
+              style="cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;">
               <div id="shootHigh" style="display:flex;align-items:center;flex: 1;border-right: 2px solid black">
                 <h2 style="font-weight:bold;flex: 1;text-align: center">High</h2>
               </div>
@@ -343,7 +350,7 @@ EOT;
               </div>
             </div>
             <div
-              style="display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;">
+              style="cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;">
               <div id="shootScore" style="display:flex;align-items:center;flex: 1;border-right: 2px solid black">
                 <h2 style="font-weight:bold;flex: 1;text-align: center">Score</h2>
               </div>
@@ -361,7 +368,7 @@ EOT;
 
 
     </div>
-    <div id="endGamePage" style="flex-direction: column; display: flex; flex: 0;width: 0;height: 0;overflow: hidden;align-items: center;justify-content: center;">
+    <div id="endGamePage" style="flex-direction: column; display: flex; flex: 0;width: 0;height: 0;overflow: hidden;align-items: center;">
 
       <div style="width: 100%">
         <div style="width: 50%;float: left;height: 2px"></div>
@@ -369,14 +376,14 @@ EOT;
           <h1 style="text-align: center;font-weight: bold">Climb</h1>
         </div>
       </div>
-      <div style="flex-direction:row;display: flex;flex: 0 1 300px;width: 100%;">
+      <div style="flex-direction:row;display: flex;flex: 0 1 200px;width: 100%;">
 
-        <div id="reachedBatter" data-reached="false" style="display:flex;align-items:center;justify-content: center;flex: 1 1 50%; background-color: #BD5A5A;margin: 50px;">
+        <div id="reachedBatter" data-reached="false" style="cursor:pointer;display:flex;align-items:center;justify-content: center;flex: 1 1 50%; background-color: #BD5A5A;margin: 0px 50px 0 50px;">
           <h1 style="margin:15px;text-align: center;font-weight: bold;color:white">Did Not Reach Batter</h1>
 
         </div>
 
-        <div data-started="false" id="climbStartEnd" style="display:flex;flex: 1 1 50%; background-color: #FF7F2A;margin: 50px;">
+        <div data-started="false" id="climbStartEnd" style="cursor:pointer;display:flex;flex: 1 1 50%; background-color: #FF7F2A;margin: 0px 50px 0 50px;">
           <div  style="display:flex;align-items:center;justify-content: center;flex: 1;margin: 50px;">
             <h1 style="margin:15px;text-align: center;font-weight: bold;color:white">Start</h1>
 
@@ -390,7 +397,25 @@ EOT;
           <h1 style="text-align: center;font-weight: bold" id="climbTimer">00:00 mins</h1>
         </div>
       </div>
-      <div class="row">
+      <hr style="width: 100%"/>
+      <div class="row" style="margin-top:20px;margin-bottom:10px;width: 100%;">
+        <div class="col-sm-6" style="display: flex">
+          <div style="margin: 0 auto;width: 60%">
+            <h4 style="text-align: center;margin-top: 0">Give this team an offensive rating</h4>
+            <div id="offensiveRating" style="width: 100%;margin: 0 auto"></div>
+          </div>
+
+        </div>
+        <div class="col-sm-6" style="display: flex">
+          <div style="margin: 0 auto;width: 60%">
+            <h4 style="text-align: center;margin-top: 0">Give this team an defensive rating</h4>
+            <div id="defensiveRating" style="width: 100% !important;margin: 0 auto"></div>
+          </div>
+
+        </div>
+      </div>
+      <hr style="width: 100%"/>
+      <div style="margin-top: 10px" class="row">
         <div class="col-sm-12">
           <a id="comfirmSubmitMatch" style="margin: 0 auto;" href="#" class="button button-pill button-flat-royal button-large">Submit</a>
         </div>
@@ -425,12 +450,19 @@ EOT;
     Take a second to make sure you have finished scouting this match completely, and correctly.
   </p>
   <br>
-  <button data-remodal-action="cancel" class="remodal-cancel">Let me make some changes.</button>
+  <button data-remodal-action="cancel" class="remodal-cancel">Make some changes.</button>
   <button id="submitMatch" data-remodal-action="confirm" class="remodal-confirm">Submit my data.</button>
 </div>
-
-
-
+<div class="remodal" data-remodal-id="confirmAbortMatch" id="confirmAbortMatch">
+  <button data-remodal-action="close" class="remodal-close"></button>
+  <h1>Are you sure?</h1>
+  <p>
+    If you abort this match, you will lose all the data you have collected so far!
+  </p>
+  <br>
+  <button data-remodal-action="cancel" class="remodal-cancel">Cancel</button>
+  <button id="abortMatch" data-remodal-action="confirm" class="remodal-confirm">Abort</button>
+</div>
 
 </body>
 <script>
@@ -446,15 +478,140 @@ var SHOOT_POS_Y = null;
 var SHOOT_LEVEL = null;
 var SHOOT_RESULT = null;
 
+var RESUMING_MATCH = <?=($RESUMING_MATCH ? "true" : "false")?>;
+var LEFT_TEAM_COLOR = "<?=($helper->LEFT_TEAM)?>";
+var DISABLE_NEXT_BREACH_HOVEROUT = false;
+var BREACH_MAP_FILTER = "origin";
+
+
+
+
 $(document).ready(function () {
-
-  var RESUMING_MATCH = <?=($RESUMING_MATCH ? "true" : "false")?>;
-  var LEFT_TEAM_COLOR = "<?=($helper->LEFT_TEAM)?>";
-
-
   if (!RESUMING_MATCH) {
     $.cookie("matchData", "", {expires: 3650, path: '/'});
   }
+  else{
+      $(window).load(function(){
+        if($.cookie("matchData") != "") {
+
+
+          var data = JSON.parse($.cookie("matchData"));
+          $("#taskSwitcher > div").eq(data.currTab).trigger("click");
+
+          data.actions.sort(
+            function compare(a,b) {
+              if (a.orderID < b.orderID)
+                return -1;
+              else if (a.orderID > b.orderID)
+                return 1;
+              else
+                return 0;
+            });
+
+          $.each(data.actions,function(index,action){
+            switch(action.eventType){
+              case "breach":
+                var defenseColumnIndex = $("[zone-name='" + action.startZone + "']").index() + (action.direction == "right" ? 1 : -1);
+                var defenseColumn = $("#breachMap > div").eq(defenseColumnIndex);
+                var defenseIndex = $(defenseColumn).find("div.defense[defense-id='" + action.defenseID + "']").index();
+                var defenseCircle = $(defenseColumn).find(".defenseCircle").eq(defenseIndex);
+                var startCircleContainer = $("[zone-name='" + action.startZone + "'] .sideCircleContainer").eq(defenseIndex);;
+                var endingCircle,clickContainer;
+                if(action.endZone != null){
+
+                  endingCircle = $("[zone-name='" + action.endZone + "'] .backOutFromBreachCircle").eq(defenseIndex);
+
+                  clickContainer = $(endingCircle).parent();
+
+                }
+                else{
+                  endingCircle = null;
+                  clickContainer = $("#breachStuck");
+                }
+                writeBreachHistoryItem(startCircleContainer,defenseCircle,clickContainer,endingCircle,action.mode);
+                break;
+              case "shoot" :
+                SHOOT_POS_X = parseFloat(action.coordX);
+                SHOOT_POS_Y = parseFloat(action.coordY);
+                SHOOT_LEVEL = parseInt(action.highLow);
+                SHOOT_RESULT = parseInt(action.scoreMiss);
+                checkAndAddShootHistoryItem(action.mode);
+                break;
+              case "feed" :
+                writeFeedHistoryItem(action.zone,action.mode);
+                break;
+              default:
+                break;
+            }
+          });
+
+          var oppMode;
+
+          if(data.currMode == "auto"){
+            oppMode = "tele";
+          }
+          else{
+            oppMode = "auto";
+          }
+
+          $("#historyList .historyItem[data-mode='"+data.currMode+"']").show();
+          $("#historyList .historyItem[data-mode='"+oppMode+"']").hide();
+          if(data.currMode == "tele"){
+            $("#modeHeading").trigger("click");
+          }
+
+          $("#offensiveRating").rateYo("rating" , data.endGame.offensiveRating);
+          $("#defensiveRating").rateYo("rating" , data.endGame.defensiveRating);
+          if(data.endGame.batterReached == "true"){
+            $("#reachedBatter").trigger("click");
+          }
+          $("#climbTimer").text(data.endGame.duration + " mins");
+          generateJSON();
+
+        }
+
+        $("#resumingMatchNotice").fadeOut(600);
+
+      });
+
+
+  }
+
+
+  $(document).keyup(function(e){
+    handleKeypress(e.originalEvent);
+  });
+
+  $("#cancelBreach").click(function(){
+    clearBreach();
+  });
+  $("#cancelShoot").click(function(){
+    clearShoot();
+  });
+
+
+
+  $("#abortMatch").click(function(){
+    $.ajax({
+      type: "POST",
+      data: {matchNumber:<?=$match->matchNumber?>, compID: <?=$currCompetition->id?>,teamNumber: <?=$SCOUTING_TEAM?>},
+      url: "/util/php/serve/cancelMatch.php",
+      success: function (data) {
+        if(data=="success"){
+          $("#redirectingNotice").css("display","flex");
+
+          toastr["success"]("The match has been aborted", "Redirecting...");
+          location.reload();
+        }
+        else{
+          toastr["error"]("Could not cancel the match!", "Aw Shucks!");
+          console.log(data);
+        }
+
+      }
+    });
+  })
+
 
   $("#taskSwitcher div").click(function () {
     $("#taskSwitcher div").removeClass("active");
@@ -496,15 +653,13 @@ $(document).ready(function () {
       });
       $("#breachPage .circle.defenseCircle").css("display", "none");
     }
+    generateJSON();
   });
 
   $("#historyList").on("click", ".deleteHistoryItem", function () {
     $(this).parent().remove();
+    generateJSON();
   });
-
-
-  var DISABLE_NEXT_BREACH_HOVEROUT = false;
-  var BREACH_MAP_FILTER = "origin";
 
 
   $("#breachPage .sideCircleContainer,#breachStuck").click(function () {
@@ -523,129 +678,14 @@ $(document).ready(function () {
     else if (BREACH_MAP_FILTER == "destination") {
 
       DISABLE_NEXT_BREACH_HOVEROUT = true;
+      var startCircleContainer = $(".sideCircleContainer[startedHere='true']");
+      var defenseCircle = $(".defenseCircle:visible");
+      var endingCircle = $(".backOutFromBreachCircle:visible");
+      var clickContainer = $(this);
 
+      writeBreachHistoryItem(startCircleContainer,defenseCircle,clickContainer,endingCircle, $("#modeHeading").attr("data-mode"));
 
-      var startedZone = $(".sideCircleContainer[startedHere='true']").parent().attr("zone-name");
-      var defense = $(".defenseCircle:visible").parent().parent();
-      var defenseName = $(".defenseCircle:visible").parent().parent().attr("defense-name");
-      var defenseImg = $(".defenseCircle:visible").parent().parent().find(".imageContainer").css("background-image");
-
-      var rightColor = "#FFFFFF",leftColor = "#FFFFFF";
-      var img1,img2;
-      var fail,startZone,endZone = null ,defenseID = $(defense).attr("defense-id");
-      var startColor = startedZone.split(" ")[0];
-      var direction = ($(defense).parent().index() < $(".sideCircleContainer[startedHere='true']").parent().index() ? "left" : "right");
-
-      if(startColor == "Red"){
-        startColor = "#FC2C16";
-        startZone = "Red Home";
-      }
-      else  if(startColor == "Blue"){
-        startColor = "#4C9DCE";
-        startZone = "Blue Home";
-      }
-      else{
-        startColor = "#FDFF6E";
-        startZone = "Neutral Territory";
-      }
-
-      if (direction == "right") {
-        leftColor = startColor;
-      }
-      else {
-        rightColor = startColor;
-      }
-
-
-      if($(this).hasClass("sideCircleContainer")){
-        fail = "false";
-        var endingZone = $(".backOutFromBreachCircle:visible").parent().parent().attr("zone-name");
-        var endColor = endingZone.split(" ")[0];
-        if(endColor == "Red"){
-          endColor = "#FC2C16";
-          endZone = "Red Home";
-
-        }
-        else if(endColor == "Blue"){
-          endColor = "#4C9DCE";
-          endZone = "Blue Home";
-
-        }
-        else{
-          endColor = "#FDFF6E";
-          endZone = "Neutral Territory";
-
-        }
-
-        if (direction == "right") {
-          rightColor = endColor;
-        }
-        else {
-          leftColor = endColor;
-        }
-
-        if(leftColor != rightColor){
-          img1 = img2 =  '/util/img/' + direction + 'Arrow.png';
-        }
-        else{
-          if(direction == "right"){
-            img1 =  '/util/img/' + direction + 'Arrow.png';
-            img2 = '/util/img/leftUTurn.png';
-          }
-          else{
-            img2 =  '/util/img/' + direction + 'Arrow.png';
-            img1 = '/util/img/rightUTurn.png';
-          }
-        }
-
-      }
-      else{
-        fail = "true";
-        if(direction == "right"){
-          img1 =  '/util/img/' + direction + 'Arrow.png';
-          img2 = '/util/img/trapped.png';
-        }
-        else{
-          img2 =  '/util/img/' + direction + 'Arrow.png';
-          img1 = '/util/img/trapped.png';
-        }
-      }
-
-
-
-
-    var mode = $("#modeHeading").attr("data-mode");
-
-
-      var html = '<div ' +
-                   ' data-startZone="'+startZone+'"' +
-                   ' data-endZone="'+endZone+'"' +
-                   ' data-defenseID="'+defenseID+'"' +
-                   ' data-fail="'+fail+'" ' +
-                   ' data-actionType="breach"' +
-                   ' data-mode="'+mode+'" ' +
-                   'class="historyItem" style="display: flex">' +
-                        '<img class="deleteHistoryItem" src="/util/img/redX.gif" style="flex: 0 0 10%;height: 85%;">' +
-                        '<div style="display: flex;flex: 1 1 80%;flex-direction: row;height: 100%">' +
-                            '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + leftColor + '">' +
-                                '<img src="'+img1+'" style="width: 80%;margin: 0 auto"/>' +
-                            '</div>' +
-                            '<div style="flex : 1 0 60%;background-image: ' + defenseImg.replace(new RegExp('"', 'g'), "'") + ';background-size: contain; background-repeat: no-repeat; background-position: center;"></div>' +
-                            '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + rightColor + '">' +
-                                '<img src="'+img2+'" style="width: 80%;margin: 0 auto"/>' +
-                            '</div>' +
-                        '</div>' +
-                        '<img class="moveHistoryItem" src="/util/img/upDownImage.png" style="flex: 0 0 10%;height: 85%;">' +
-                '</div> ';
-      $("#historyList").prepend(html);
-      generateJSON()
-
-
-      $(".sideCircleContainer[startedHere='true']").removeAttr("startedHere").find(".startBreachCircle").hide();
-      $(".defenseCircle:visible").parent().siblings().eq(0).removeClass("blurred");
-      $(".defenseCircle:visible").hide()
-      $(".backOutFromBreachCircle:visible").hide();
-      BREACH_MAP_FILTER = "origin";
+      clearBreach();
 
 
     }
@@ -807,7 +847,7 @@ $(document).ready(function () {
       SHOOT_LEVEL = 0;
     }
 
-    checkAndAddShootHistoryItem();
+    checkAndAddShootHistoryItem( $("#modeHeading").attr("data-mode"));
 
   });
   $("#shootPage #shootScore, #shootPage #shootMiss").click(function () {
@@ -820,7 +860,7 @@ $(document).ready(function () {
     else{
       SHOOT_RESULT = 0;
     }
-    checkAndAddShootHistoryItem();
+    checkAndAddShootHistoryItem($("#modeHeading").attr("data-mode"));
 
   });
 
@@ -840,14 +880,16 @@ var climbTimer;
   $("#endGamePage #climbStartEnd").click(function(){
 
     if($(this).attr("data-started") == "false"){
+      sec = 0;
       $("#climbTimer").text( pad(parseInt(sec/60,10)) + ":" + pad(sec%60) + " mins");
 
       climbTimer = setInterval( function(){
         var seconds = pad(++sec%60);
         var mins = pad(parseInt(sec/60,10));
         $("#climbTimer").text(mins+":"+seconds + " mins");
+        generateJSON();
       }, 1000);
-      $(this).attr("data-started","true").find("h1").text("End")
+      $(this).attr("data-started","true").find("h1").text("End");
     }
     else{
       clearInterval(climbTimer);
@@ -874,13 +916,13 @@ var climbTimer;
       $("#historyList .historyItem[data-mode='tele']").hide();
       $("#historyList .historyItem[data-mode='auto']").show();
     }
-
+    generateJSON();
 
   })
 
 
   $("#submitMatch").click(function(){
-
+    generateJSON();
     $.ajax({
       type: "POST",
       url: "/util/php/serve/addMatchData.php",
@@ -903,12 +945,15 @@ var climbTimer;
     var inst = $("#confirmSubmitModal").remodal();
     inst.open();
   })
+  $("#abortMatchConfirm").click(function(){
+    var inst = $("#confirmAbortMatch").remodal();
+    inst.open();
+  })
 
 
 });
 
 $(window).on('load', function () {
-
 
   // Get the Object by ID
   var a = document.getElementById("feedSVG");
@@ -919,9 +964,22 @@ $(window).on('load', function () {
     // svgItem.setAttribute("fill", "#50ce4c");
     feedSVGDocMouseOver(e);
   });
+
+  feedSVGDoc.addEventListener("touchstart", function (e) {
+    // svgItem.setAttribute("fill", "#4c9dce");
+    feedSVGDocMouseOver(e);
+    e.preventDefault();
+  });
   feedSVGDoc.addEventListener("mouseout", function (e) {
     // svgItem.setAttribute("fill", "#4c9dce");
     feedSVGDocMouseOut(e);
+
+  });
+  feedSVGDoc.addEventListener("touchend", function (e) {
+    // svgItem.setAttribute("fill", "#4c9dce");
+    feedSVGDocMouseOut(e);
+    e.preventDefault();
+    feedSVGDocClick(e);
 
   });
   feedSVGDoc.addEventListener("click", function (e) {
@@ -938,7 +996,12 @@ $(window).on('load', function () {
     shootSVGDocClick(e);
 
   });
-
+  shootSVGDoc.addEventListener("keyup", function (e) {
+    handleKeypress(e);
+  });
+  feedSVGDoc.addEventListener("keyup", function (e) {
+    handleKeypress(e);
+  });
 
   dragula([document.getElementById("historyList")],
     {
@@ -946,7 +1009,50 @@ $(window).on('load', function () {
         return handle.className === 'moveHistoryItem';
       }
     }
-  );
+  ).on('drop', function (el, container) {
+      generateJSON();
+    });
+
+
+
+  $("#feedPage,#breachPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
+  $("#endGamePage").css("flex", "0 1 75%").css("width", "").css("height", "").css("overflow", "");
+
+
+
+  $("#offensiveRating").rateYo({
+    numStars: 10,
+    fullStar: true,
+    starWidth: $("#offensiveRating").width() / 10 + "px",
+    maxValue : 10,
+    rating: 1
+
+  });
+
+  $("#defensiveRating").rateYo({
+    numStars: 10,
+    fullStar: true,
+    starWidth: $("#defensiveRating").width() / 10 + "px",
+    maxValue : 10,
+    rating: 1
+
+  });
+
+  $("#defensiveRating,#offensiveRating").on("rateyo.set",function(e,data){
+    var rateyo = $(this)
+    var rating = $(rateyo).rateYo("rating");
+    if(rating == 0){
+      $(rateyo).rateYo("rating", 1);
+    }
+
+    generateJSON();
+
+  });
+
+
+  $("#feedPage,#breachPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
+  $("#feedPage").css("flex", "0 1 75%").css("width", "").css("height", "").css("overflow", "");
+
 
 });
 
@@ -958,7 +1064,6 @@ function feedSVGDocMouseOver(e) {
   }
 
 }
-
 
 function feedSVGDocMouseOut(e) {
   if (e.target.getAttribute("allow-hover") == "true") {
@@ -972,13 +1077,8 @@ function feedSVGDocClick(e) {
 
     var zone = e.target.getAttribute("zone-name");
     var mode = $("#modeHeading").attr("data-mode");
-
-    $("#historyList").prepend("<div data-zone='"+zone+"' data-actionType='feed' data-mode="+mode+" class=\"historyItem\" style='display: flex'> " +
-    "<img class='deleteHistoryItem' src='/util/img/redX.gif' style='flex: 0 0 10%;height: 85%;'/>" +
-    "<h3 style='flex: 1 1 80%;text-align: center;line-height: 21px'><b>Feed</b> - " + zone + "</h3>" +
-    "<img class='moveHistoryItem' src='/util/img/upDownImage.png' style='flex: 0 0 10%;height: 85%;'/>" +
-    "</div>");
-    generateJSON()
+    writeFeedHistoryItem(zone,mode);
+    generateJSON();
     $("#historyList h3").each(function (index, e) {
 
       if($(this).is(":visible")){
@@ -1001,7 +1101,13 @@ function feedSVGDocClick(e) {
   }
 
 }
-
+function writeFeedHistoryItem(zone,mode){
+  $("#historyList").prepend("<div data-zone='"+zone+"' data-actionType='feed' data-mode="+mode+" class=\"historyItem\" style='display: flex'> " +
+  "<img class='deleteHistoryItem' src='/util/img/redX.gif' style='cursor:pointer;flex: 0 0 10%;height: 85%;'/>" +
+  "<h3 style='flex: 1 1 80%;text-align: center;line-height: 21px'><b>Feed</b> - " + zone + "</h3>" +
+  "<img class='moveHistoryItem' src='/util/img/upDownImage.png' style='cursor:pointer;flex: 0 0 10%;height: 85%;'/>" +
+  "</div>");
+}
 function shootSVGDocClick(e) {
   var layer1 = shootSVGDoc.getElementById("layer1").getBoundingClientRect();
 
@@ -1013,7 +1119,7 @@ function shootSVGDocClick(e) {
   if (e.clientX >= minWidth && e.clientX <= maxWidth && e.clientY >= minHeight && e.clientY <= maxHeight) {
 
     var clickX = e.clientX - minWidth;
-    var clickY = e.clientY - minHeight;
+    var clickY = maxHeight - e.clientY;
 
     var clickXInches = (clickX / layer1.width) * HALF_FIELD_LENGTH_INCHES;
     var clickYInches = (clickY / layer1.height) * HALF_FIELD_HEIGHT_INCHES;
@@ -1033,13 +1139,13 @@ function shootSVGDocClick(e) {
     if (shootSVGDoc.getElementById("shootPosition")) {
       d3.select(shootSVGDoc.getElementById("shootPosition"))
         .attr("cx", (clickX / layer1.width) * 498.90457)
-        .attr("cy", (clickY / layer1.height) * 489.37781)
+        .attr("cy", ((maxHeight-clickY) / layer1.height) * 489.37781)
     }
     else {
 
       d3.select(shootSVGDoc.rootElement).append("svg:circle")
         .attr("cx", (clickX / layer1.width) * 498.90457)
-        .attr("cy", (clickY / layer1.height) * 489.37781)
+        .attr("cy", ((maxHeight-clickY) / layer1.height) * 489.37781)
         .attr("r", 10)
         .attr("id", "shootPosition")
         .attr("style", "cursor:crosshair;fill: #ff6600; fill-opacity: 1; fill-rule: nonzero; stroke: #000000; stroke-width: 6.58412218; stroke-linecap: round; stroke-linejoin: bevel; stroke-miterlimit: 4; stroke-opacity: 1; stroke-dasharray: none; stroke-dashoffset: 0; stroke-width: 3px;");
@@ -1049,13 +1155,13 @@ function shootSVGDocClick(e) {
 
     SHOOT_POS_X = actualClickXInches;
     SHOOT_POS_Y = actualClickYInches;
-    checkAndAddShootHistoryItem();
+    checkAndAddShootHistoryItem($("#modeHeading").attr("data-mode"));
 //    console.log("(" + (clickX / layer1.width) * 498.90457 + "," + (clickY / layer1.height) * 489.37781 + ")");
 
   }
 }
 
-function checkAndAddShootHistoryItem(){
+function checkAndAddShootHistoryItem(mode){
 
   if(SHOOT_LEVEL != null && SHOOT_RESULT != null && SHOOT_POS_X != null && SHOOT_POS_Y != null){
 
@@ -1076,26 +1182,30 @@ function checkAndAddShootHistoryItem(){
     else{
       level = "Low";
     }
-    var mode = $("#modeHeading").attr("data-mode");
 
     $("#historyList").prepend("<div data-coordX='"+SHOOT_POS_X+"'" +
     " data-coordY='"+SHOOT_POS_Y+"'" +
     " data-highLow='"+SHOOT_LEVEL+"'" +
     " data-scoreMiss='"+SHOOT_RESULT+"' " +
     "data-actionType=\"shoot\" data-mode="+mode+" class=\"historyItem\" style='background: "+bg+"; display: flex'> " +
-    "<img class='deleteHistoryItem' src='/util/img/redX.gif' style='flex: 0 0 10%;height: 85%;'/>" +
+    "<img class='deleteHistoryItem' src='/util/img/redX.gif' style='cursor:pointer;flex: 0 0 10%;height: 85%;'/>" +
     "<h3 style='flex: 1 1 80%;text-align: center;line-height: 21px'><b>" + result +"</b> " + level + " Goal</h3>" +
-    "<img class='moveHistoryItem' src='/util/img/upDownImage.png' style='flex: 0 0 10%;height: 85%;'/>" +
+    "<img class='moveHistoryItem' src='/util/img/upDownImage.png' style='cursor:pointer;flex: 0 0 10%;height: 85%;'/>" +
     "</div>");
-    d3.select(shootSVGDoc.getElementById("shootPosition")).transition().duration(400).style("opacity", 0).each("end", function(){
-      d3.select(shootSVGDoc.getElementById("shootPosition")).remove();
-    });
-    $("#shootPage #shootScore, #shootPage #shootMiss").animate({ backgroundColor: "transparent"}, 'slow').removeAttr("selected");
-    $("#shootPage #shootHigh, #shootPage #shootLow").animate({ backgroundColor: "transparent"}, 'slow').removeAttr("selected");
-
-    SHOOT_LEVEL = SHOOT_POS_X = SHOOT_POS_Y = SHOOT_RESULT = null;
+    clearShoot();
     generateJSON();
   }
+}
+
+function clearShoot(){
+  d3.select(shootSVGDoc.getElementById("shootPosition")).transition().duration(400).style("opacity", 0).each("end", function(){
+    d3.select(shootSVGDoc.getElementById("shootPosition")).remove();
+  });
+  $("#shootPage #shootScore, #shootPage #shootMiss").animate({ backgroundColor: "transparent"}, 'slow').removeAttr("selected");
+  $("#shootPage #shootHigh, #shootPage #shootLow").animate({ backgroundColor: "transparent"}, 'slow').removeAttr("selected");
+
+  SHOOT_LEVEL = SHOOT_POS_X = SHOOT_POS_Y = SHOOT_RESULT = null;
+
 }
 
 function generateJSON(){
@@ -1118,16 +1228,27 @@ function generateJSON(){
 
   var endGame = {
     batterReached : $("#reachedBatter").attr("data-reached"),
-    duration : $("#climbTimer").text().substr(0,5)
+    duration : $("#climbTimer").text().substr(0,5),
+    defensiveRating:$("#defensiveRating").rateYo("rating"),
+    offensiveRating:$("#offensiveRating").rateYo("rating")
   };
 
   var matchData = {
     actions: records,
     endGame:  endGame,
-    teamNumber: <?=$SCOUTING_TEAM?>,
-    matchID: <?=$match->id?>,
-    compID: <?=$currCompetition->id?>
+    teamMatch: <?=json_encode($SCOUTING_TEAM_MATCH)?>,
+    compID: <?=$currCompetition->id?>,
+    matchNumber : <?=$match->matchNumber?>,
+    currMode : $("#modeHeading").attr("data-mode"),
+    currTab : $("#taskSwitcher div.active").index()
   };
+
+  var j = 1;
+  for(var i = records.length - 1 ; i >= 0;i--){
+    records[i].orderID = j;
+    j++;
+  }
+
 
   $.cookie("matchData",JSON.stringify(matchData));
 
@@ -1146,6 +1267,7 @@ function generateJSON(){
         record.endZone = $(e).attr("data-endZone");
         record.endZone = (record.endZone == "null" ? null : record.endZone);
         record.fail = $(e).attr("data-fail");
+        record.direction = $(e).attr("data-direction");
         record.orderID = counter;
         record.eventType = "breach";
 
@@ -1169,6 +1291,173 @@ function generateJSON(){
   }
 
 }
+
+function isTouchDevice(){
+    var bool;
+    if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+      bool = true;
+    } else {
+      // include the 'heartz' as a way to have a non matching MQ to help terminate the join
+      // https://git.io/vznFH
+      var query = ['@media (', prefixes.join('touch-enabled),('), 'heartz', ')', '{#modernizr{top:9px;position:absolute}}'].join('');
+      testStyles(query, function(node) {
+        bool = node.offsetTop === 9;
+      });
+    }
+    return bool;
+
+}
+
+function writeBreachHistoryItem(startCircleContainer,defenseCircle,clickContainer,endingCircle,mode){
+
+  var startedZone = $(startCircleContainer).parent().attr("zone-name");
+  var defense = $(defenseCircle).parent().parent();
+  var defenseName = $(defenseCircle).parent().parent().attr("defense-name");
+  var defenseImg = $(defenseCircle).parent().parent().find(".imageContainer").css("background-image");
+
+  var rightColor = "#FFFFFF",leftColor = "#FFFFFF";
+  var img1,img2;
+  var fail,startZone,endZone = null ,defenseID = $(defense).attr("defense-id");
+  var startColor = startedZone.split(" ")[0];
+  var direction = ($(defense).parent().index() < $(startCircleContainer).parent().index() ? "left" : "right");
+
+  if(startColor == "Red"){
+    startColor = "#FC2C16";
+    startZone = "Red Home";
+  }
+  else  if(startColor == "Blue"){
+    startColor = "#4C9DCE";
+    startZone = "Blue Home";
+  }
+  else{
+    startColor = "#FDFF6E";
+    startZone = "Neutral Territory";
+  }
+
+  if (direction == "right") {
+    leftColor = startColor;
+  }
+  else {
+    rightColor = startColor;
+  }
+
+
+  if($(clickContainer).hasClass("sideCircleContainer")){
+    fail = "false";
+    var endingZone = $(endingCircle).parent().parent().attr("zone-name");
+    var endColor = endingZone.split(" ")[0];
+    if(endColor == "Red"){
+      endColor = "#FC2C16";
+      endZone = "Red Home";
+
+    }
+    else if(endColor == "Blue"){
+      endColor = "#4C9DCE";
+      endZone = "Blue Home";
+
+    }
+    else{
+      endColor = "#FDFF6E";
+      endZone = "Neutral Territory";
+
+    }
+
+    if (direction == "right") {
+      rightColor = endColor;
+    }
+    else {
+      leftColor = endColor;
+    }
+
+    if(leftColor != rightColor){
+      img1 = img2 =  '/util/img/' + direction + 'Arrow.png';
+    }
+    else{
+      if(direction == "right"){
+        img1 =  '/util/img/' + direction + 'Arrow.png';
+        img2 = '/util/img/leftUTurn.png';
+      }
+      else{
+        img2 =  '/util/img/' + direction + 'Arrow.png';
+        img1 = '/util/img/rightUTurn.png';
+      }
+    }
+
+  }
+  else{
+    fail = "true";
+    if(direction == "right"){
+      img1 =  '/util/img/' + direction + 'Arrow.png';
+      img2 = '/util/img/trapped.png';
+    }
+    else{
+      img2 =  '/util/img/' + direction + 'Arrow.png';
+      img1 = '/util/img/trapped.png';
+    }
+  }
+
+
+  var html = '<div ' +
+    ' data-startZone="'+startZone+'"' +
+    ' data-endZone="'+endZone+'"' +
+    ' data-defenseID="'+defenseID+'"' +
+    ' data-fail="'+fail+'" ' +
+    ' data-actionType="breach"' +
+    ' data-mode="'+mode+'" ' +
+    ' data-direction="'+direction+'" ' +
+    'class="historyItem" style="display: flex">' +
+    '<img class="deleteHistoryItem" src="/util/img/redX.gif" style="cursor:pointer;flex: 0 0 10%;height: 85%;">' +
+    '<div style="display: flex;flex: 1 1 80%;flex-direction: row;height: 100%">' +
+    '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + leftColor + '">' +
+    '<img src="'+img1+'" style="width: 80%;margin: 0 auto"/>' +
+    '</div>' +
+    '<div style="flex : 1 0 60%;background-image: ' + defenseImg.replace(new RegExp('"', 'g'), "'") + ';background-size: contain; background-repeat: no-repeat; background-position: center;"></div>' +
+    '<div style="flex : 1 0 20%;display: flex;align-items: center;background-color: ' + rightColor + '">' +
+    '<img src="'+img2+'" style="width: 80%;margin: 0 auto"/>' +
+    '</div>' +
+    '</div>' +
+    '<img class="moveHistoryItem" src="/util/img/upDownImage.png" style="cursor:pointer;flex: 0 0 10%;height: 85%;">' +
+    '</div> ';
+  $("#historyList").prepend(html);
+
+
+  generateJSON();
+
+
+}
+
+function clearBreach(){
+
+  var startCircleContainer = $(".sideCircleContainer[startedHere='true']");
+  var defenseCircle = $(".defenseCircle:visible");
+  var endingCircle = $(".backOutFromBreachCircle:visible");
+  $(startCircleContainer).removeAttr("startedHere").find(".startBreachCircle").hide();
+  $(defenseCircle).parent().siblings().eq(0).removeClass("blurred");
+  $(defenseCircle).hide();
+  $(endingCircle).hide();
+  BREACH_MAP_FILTER = "origin";
+}
+
+function handleKeypress(e){
+    if(e.code.indexOf("Digit") > -1){
+      var index = parseInt(e.code.substring(e.code.length -1)) -1;
+      clearBreach();
+      clearShoot();
+      $("#taskSwitcher > div").eq(index).trigger("click");
+    }
+    else  if (e.keyCode == 27) { // escape key maps to keycode `27`
+      if($("#breachPage").width() > 0){
+        $("#cancelBreach").trigger("click");
+      }
+      else if($("#shootPage").width() > 0){
+        $("#cancelShoot").trigger("click");
+      }
+    }
+    else if (e.keyCode == 90 && e.ctrlKey){
+      $("#historyList div.historyItem").eq(0).find(".deleteHistoryItem").trigger("click")
+    }
+}
+
 
 
 </script>

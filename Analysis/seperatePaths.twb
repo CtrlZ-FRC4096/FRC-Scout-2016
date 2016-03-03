@@ -1,0 +1,1206 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 9200.16.0204.1543                                -->
+<workbook source-platform='win' version='9.2' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='competitions+ (scouting2016)' inline='true' name='mysql.0hed50t0bwmmev16qzrsq0csjaoq' version='9.2'>
+      <connection class='mysql' dbname='scouting2016' odbc-native-protocol='yes' port='3306' server='localhost' source-charset='' username='user'>
+        <relation join='inner' type='join'>
+          <clause type='join'>
+            <expression op='='>
+              <expression op='[breachDefenses].[outerDefenseID]' />
+              <expression op='[defenses].[id]' />
+            </expression>
+          </clause>
+          <relation join='inner' type='join'>
+            <clause type='join'>
+              <expression op='='>
+                <expression op='[teams].[teamNumber]' />
+                <expression op='[breachDefenses].[teamNumber]' />
+              </expression>
+            </clause>
+            <relation join='inner' type='join'>
+              <clause type='join'>
+                <expression op='='>
+                  <expression op='[teams].[teamNumber]' />
+                  <expression op='[breachCounts].[teamNumber]' />
+                </expression>
+              </clause>
+              <relation name='teams' table='[teams]' type='table' />
+              <relation name='breachCounts' type='text'>SELECT&#13;&#10;   matchbreaches.id as breachID,&#13;&#10;   matchNumber as matchesPlayed,&#13;&#10;  teamNumber&#13;&#10;FROM teammatches&#13;&#10;  LEFT JOIN matchbreaches ON teammatches.id = matchbreaches.teamMatchID&#13;&#10;  LEFT JOIN matches ON teammatches.matchID = matches.id&#13;&#10;WHERE collectionEnded = 1</relation>
+            </relation>
+            <relation name='breachDefenses' type='text'>SELECT defenses.id as outerDefenseID&#13;&#10;    ,teamNumber&#13;&#10;    ,direction&#13;&#10;    ,SUM((SELECT COUNT(id)&#13;&#10;            FROM matchBreaches&#13;&#10;            WHERE teamMatchID = teamMatches.id &#13;&#10;              AND defenseID = outerDefenseID&#13;&#10;              AND IF(startZone = 7,&apos;Away From Opponent&apos;,&apos;Toward Opponent&apos;) = direction)) as breachDefenseCount&#13;&#10;FROM defenses&#13;&#10;JOIN teamMatches&#13;&#10;JOIN&#13;&#10;  (SELECT &apos;Away From Opponent&apos; as direction&#13;&#10;   UNION&#13;&#10;   SELECT &apos;Toward Opponent&apos; as direction) as directions&#13;&#10;GROUP BY outerDefenseID,teamNumber,direction</relation>
+          </relation>
+          <relation name='defenses' table='[defenses]' type='table' />
+        </relation>
+        <cols>
+          <map key='[breachDefenseCount]' value='[breachDefenses].[breachDefenseCount]' />
+          <map key='[breachID]' value='[breachCounts].[breachID]' />
+          <map key='[category]' value='[defenses].[category]' />
+          <map key='[direction]' value='[breachDefenses].[direction]' />
+          <map key='[id]' value='[defenses].[id]' />
+          <map key='[img]' value='[defenses].[img]' />
+          <map key='[matchesPlayed]' value='[breachCounts].[matchesPlayed]' />
+          <map key='[name]' value='[defenses].[name]' />
+          <map key='[outerDefenseID]' value='[breachDefenses].[outerDefenseID]' />
+          <map key='[teamName]' value='[teams].[teamName]' />
+          <map key='[teamNumber (Custom SQL Query) #1]' value='[breachDefenses].[teamNumber]' />
+          <map key='[teamNumber (Custom SQL Query)]' value='[breachCounts].[teamNumber]' />
+          <map key='[teamNumber]' value='[teams].[teamNumber]' />
+        </cols>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>teamNumber</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[teamNumber]</local-name>
+            <parent-name>[teams]</parent-name>
+            <remote-alias>teamNumber</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>teamName</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[teamName]</local-name>
+            <parent-name>[teams]</parent-name>
+            <remote-alias>teamName</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>false</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>breachID</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[breachID]</local-name>
+            <parent-name>[breachCounts]</parent-name>
+            <remote-alias>breachID</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>matchesPlayed</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[matchesPlayed]</local-name>
+            <parent-name>[breachCounts]</parent-name>
+            <remote-alias>matchesPlayed</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>teamNumber</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[teamNumber (Custom SQL Query)]</local-name>
+            <parent-name>[breachCounts]</parent-name>
+            <remote-alias>teamNumber</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>outerDefenseID</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[outerDefenseID]</local-name>
+            <parent-name>[breachDefenses]</parent-name>
+            <remote-alias>outerDefenseID</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>teamNumber</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[teamNumber (Custom SQL Query) #1]</local-name>
+            <parent-name>[breachDefenses]</parent-name>
+            <remote-alias>teamNumber</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>direction</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[direction]</local-name>
+            <parent-name>[breachDefenses]</parent-name>
+            <remote-alias>direction</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>18</width>
+            <contains-null>false</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>breachDefenseCount</remote-name>
+            <remote-type>131</remote-type>
+            <local-name>[breachDefenseCount]</local-name>
+            <parent-name>[breachDefenses]</parent-name>
+            <remote-alias>breachDefenseCount</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>42</precision>
+            <scale>0</scale>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_DECIMAL&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_NUMERIC&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[id]</local-name>
+            <parent-name>[defenses]</parent-name>
+            <remote-alias>id</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[name]</local-name>
+            <parent-name>[defenses]</parent-name>
+            <remote-alias>name</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>100</width>
+            <contains-null>false</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>category</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[category]</local-name>
+            <parent-name>[defenses]</parent-name>
+            <remote-alias>category</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>5</width>
+            <contains-null>false</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>img</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[img]</local-name>
+            <parent-name>[defenses]</parent-name>
+            <remote-alias>img</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>200</width>
+            <contains-null>false</contains-null>
+            <collation charset='280' flag='1' name='LEN_RUS_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_VARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_CHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column datatype='string' name='[:Measure Names]' role='dimension' type='nominal'>
+        <aliases>
+          <alias key='&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[max:Calculation_991917873559404545:qk]&quot;' value='Max' />
+          <alias key='&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[min:Max Shoots By Team (copy):qk]&quot;' value='Min' />
+          <alias key='&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[min:Max Shoots By Team / Match (copy):qk]&quot;' value='Avg' />
+        </aliases>
+      </column>
+      <column caption='Shoot - High Low Text' datatype='string' name='[Calculation_410109096362815489]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IIF([highLow] =1 , &quot;High&quot;,&quot;Low&quot;)' />
+      </column>
+      <column caption='Shoot Outcome Text' datatype='string' name='[Calculation_410109096363196418]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IIF([scoreMiss] = 1,&quot;Score&quot;,&quot;Miss&quot;)' />
+      </column>
+      <column caption='Lookup Team Number' datatype='integer' name='[Calculation_56858000467189760]' role='measure' type='ordinal'>
+        <calculation class='tableau' formula='LOOKUP(ATTR([teamNumber]),0)'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='matchPlayed' datatype='integer' name='[Calculation_56858000468602881]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNT([matchID])' />
+      </column>
+      <column caption='Direction of Breach' datatype='string' name='[Calculation_620933853187858432]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IIF(&#13;&#10;[name (zones)] = &apos;Neutral Territory&apos;,&#13;&#10;&apos;Toward Opponent&apos;,&#13;&#10;&apos;Away from Opponent&apos;)' />
+      </column>
+      <column caption='Breach Outcome' datatype='string' name='[Calculation_620933853188370433]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IIF([fail] == 1,&apos;Fail&apos;,IIF([endZone] = [startZone],&apos;Back Out&apos;,&apos;Success&apos;))' />
+      </column>
+      <column caption='count of breach/match' datatype='real' name='[Calculation_989103123872194581]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNTD([breachID]) / COUNTD([matchesPlayed])' />
+      </column>
+      <column caption='Max Shoots By Team / Match' datatype='integer' name='[Calculation_991917873559404545]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='{ FIXED [teamNumber] : &#13;&#10;    MAX({ FIXED [teamNumber], [matchNumber] : &#13;&#10;        COUNTD([id (matchshoots)]) &#13;&#10;    })&#13;&#10; }' />
+      </column>
+      <column caption='Min Shoots By Team / Match' datatype='integer' name='[Max Shoots By Team (copy)]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='{ FIXED [teamNumber] : &#13;&#10;    MIN({ FIXED [teamNumber], [matchNumber] : &#13;&#10;        COUNTD([id (matchshoots)]) &#13;&#10;    })&#13;&#10; }' />
+      </column>
+      <column caption='Avg Shoots By Team / Match' datatype='real' name='[Max Shoots By Team / Match (copy)]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='{ FIXED [teamNumber] : &#13;&#10;    AVG({ FIXED [teamNumber], [matchNumber] : &#13;&#10;        COUNTD([id (matchshoots)]) &#13;&#10;    })&#13;&#10; }' />
+      </column>
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column caption='Category' datatype='string' name='[category]' role='dimension' type='nominal' />
+      <column caption='Id' datatype='integer' name='[id]' role='dimension' type='ordinal' />
+      <column caption='Img' datatype='string' name='[img]' role='dimension' type='nominal' />
+      <column caption='Name' datatype='string' name='[name]' role='dimension' type='nominal' />
+      <column caption='Team Name' datatype='string' name='[teamName]' role='dimension' type='nominal' />
+      <column aggregation='Sum' caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
+      <column-instance column='[Calculation_991917873559404545]' derivation='Max' name='[max:Calculation_991917873559404545:qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Max Shoots By Team (copy)]' derivation='Min' name='[min:Max Shoots By Team (copy):qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Max Shoots By Team / Match (copy)]' derivation='Min' name='[min:Max Shoots By Team / Match (copy):qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Calculation_410109096363196418]' derivation='None' name='[none:Calculation_410109096363196418:nk]' pivot='key' type='nominal' />
+      <column-instance column='[Calculation_620933853187858432]' derivation='None' name='[none:Calculation_620933853187858432:nk]' pivot='key' type='nominal' />
+      <column-instance column='[teamNumber]' derivation='None' name='[none:teamNumber:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[Calculation_991917873559404545]' derivation='Sum' name='[sum:Calculation_991917873559404545:qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Max Shoots By Team (copy)]' derivation='Sum' name='[sum:Max Shoots By Team (copy):qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Max Shoots By Team / Match (copy)]' derivation='Sum' name='[sum:Max Shoots By Team / Match (copy):qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+      <column-instance column='[Calculation_56858000467189760]' derivation='User' name='[usr:Calculation_56858000467189760:ok]' pivot='key' type='ordinal'>
+        <table-calc ordering-type='Rows' />
+      </column-instance>
+      <column-instance column='[Calculation_56858000468602881]' derivation='User' name='[usr:Calculation_56858000468602881:qk]' pivot='key' type='quantitative' />
+      <mapped-images>
+        <mapped-image caption='blueLeftShoot' expression='file:///C:/wamp/www/util/svg/blueLeftShoot.png' name='[MappedImage1]'>
+          <mapping bottom='0.0' left='0.0' right='325.11000000000001' top='319.72000000000003' x='[coordX]' y='[coordY]' />
+        </mapped-image>
+      </mapped-images>
+      <layout dim-ordering='alphabetic' dim-percentage='0.486624' measure-ordering='alphabetic' measure-percentage='0.513376' show-structure='true' user-set-layout='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field='[none:Calculation_620933853187858432:nk]' type='palette'>
+            <map to='#1f77b4'>
+              <bucket>&quot;Away from Opponent&quot;</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>%null%</bucket>
+            </map>
+            <map to='#ff7f0e'>
+              <bucket>&quot;Toward Opponent&quot;</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[none:teamNumber:ok]' type='palette'>
+            <map to='#17becf'>
+              <bucket>2220</bucket>
+            </map>
+            <map to='#17becf'>
+              <bucket>5541</bucket>
+            </map>
+            <map to='#1f77b4'>
+              <bucket>%null%</bucket>
+            </map>
+            <map to='#1f77b4'>
+              <bucket>2481</bucket>
+            </map>
+            <map to='#1f77b4'>
+              <bucket>5847</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>876</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>3528</bucket>
+            </map>
+            <map to='#7f7f7f'>
+              <bucket>2039</bucket>
+            </map>
+            <map to='#7f7f7f'>
+              <bucket>4646</bucket>
+            </map>
+            <map to='#8c564b'>
+              <bucket>1736</bucket>
+            </map>
+            <map to='#8c564b'>
+              <bucket>4213</bucket>
+            </map>
+            <map to='#9467bd'>
+              <bucket>1625</bucket>
+            </map>
+            <map to='#9467bd'>
+              <bucket>4156</bucket>
+            </map>
+            <map to='#98df8a'>
+              <bucket>1038</bucket>
+            </map>
+            <map to='#98df8a'>
+              <bucket>4021</bucket>
+            </map>
+            <map to='#9edae5'>
+              <bucket>2358</bucket>
+            </map>
+            <map to='#9edae5'>
+              <bucket>5822</bucket>
+            </map>
+            <map to='#aec7e8'>
+              <bucket>81</bucket>
+            </map>
+            <map to='#aec7e8'>
+              <bucket>2704</bucket>
+            </map>
+            <map to='#bcbd22'>
+              <bucket>2081</bucket>
+            </map>
+            <map to='#bcbd22'>
+              <bucket>4787</bucket>
+            </map>
+            <map to='#c49c94'>
+              <bucket>1756</bucket>
+            </map>
+            <map to='#c49c94'>
+              <bucket>4296</bucket>
+            </map>
+            <map to='#c5b0d5'>
+              <bucket>1732</bucket>
+            </map>
+            <map to='#c5b0d5'>
+              <bucket>4212</bucket>
+            </map>
+            <map to='#c7c7c7'>
+              <bucket>2040</bucket>
+            </map>
+            <map to='#c7c7c7'>
+              <bucket>4655</bucket>
+            </map>
+            <map to='#d62728'>
+              <bucket>1091</bucket>
+            </map>
+            <map to='#d62728'>
+              <bucket>4096</bucket>
+            </map>
+            <map to='#dbdb8d'>
+              <bucket>2169</bucket>
+            </map>
+            <map to='#dbdb8d'>
+              <bucket>5442</bucket>
+            </map>
+            <map to='#e377c2'>
+              <bucket>1781</bucket>
+            </map>
+            <map to='#e377c2'>
+              <bucket>4314</bucket>
+            </map>
+            <map to='#f7b6d2'>
+              <bucket>2022</bucket>
+            </map>
+            <map to='#f7b6d2'>
+              <bucket>4645</bucket>
+            </map>
+            <map to='#ff7f0e'>
+              <bucket>93</bucket>
+            </map>
+            <map to='#ff7f0e'>
+              <bucket>2709</bucket>
+            </map>
+            <map to='#ff9896'>
+              <bucket>1094</bucket>
+            </map>
+            <map to='#ff9896'>
+              <bucket>4143</bucket>
+            </map>
+            <map to='#ffbb78'>
+              <bucket>111</bucket>
+            </map>
+            <map to='#ffbb78'>
+              <bucket>3352</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[:Measure Names]' type='palette'>
+            <map to='#17becf'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:Number of Records:qk]&quot;</bucket>
+            </map>
+            <map to='#17becf'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:position:qk]&quot;</bucket>
+            </map>
+            <map to='#1f77b4'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[max:Calculation_991917873559404545:qk]&quot;</bucket>
+            </map>
+            <map to='#1f77b4'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:startZone:qk]&quot;</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[min:Max Shoots By Team / Match (copy):qk]&quot;</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:collectionEnded:qk]&quot;</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:Max Shoots By Team / Match (copy):qk]&quot;</bucket>
+            </map>
+            <map to='#7f7f7f'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:highLow:qk]&quot;</bucket>
+            </map>
+            <map to='#8c564b'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:duration:qk]&quot;</bucket>
+            </map>
+            <map to='#9467bd'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:current:qk]&quot;</bucket>
+            </map>
+            <map to='#98df8a'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:collectionStarted:qk]&quot;</bucket>
+            </map>
+            <map to='#9edae5'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:offensiveRating:qk]&quot;</bucket>
+            </map>
+            <map to='#9edae5'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:scoreMiss:qk]&quot;</bucket>
+            </map>
+            <map to='#aec7e8'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:batterReached:qk]&quot;</bucket>
+            </map>
+            <map to='#aec7e8'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[usr:Calculation_56858000468602881:qk]&quot;</bucket>
+            </map>
+            <map to='#bcbd22'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:Calculation_991917873559404545:qk]&quot;</bucket>
+            </map>
+            <map to='#c49c94'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:endZone:qk]&quot;</bucket>
+            </map>
+            <map to='#c5b0d5'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:defensiveRating:qk]&quot;</bucket>
+            </map>
+            <map to='#c7c7c7'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[usr:Calculation_56858000467189760:ok]&quot;</bucket>
+            </map>
+            <map to='#d62728'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:coordX:qk]&quot;</bucket>
+            </map>
+            <map to='#dbdb8d'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:Max Shoots By Team (copy):qk]&quot;</bucket>
+            </map>
+            <map to='#e377c2'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:exported:qk]&quot;</bucket>
+            </map>
+            <map to='#f7b6d2'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:fail:qk]&quot;</bucket>
+            </map>
+            <map to='#ff7f0e'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[min:Max Shoots By Team (copy):qk]&quot;</bucket>
+            </map>
+            <map to='#ff9896'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[sum:coordY:qk]&quot;</bucket>
+            </map>
+            <map to='#ffbb78'>
+              <bucket>&quot;[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[usr:Calculation_266556858232389634:qk]&quot;</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[none:Calculation_410109096363196418:nk]' type='palette'>
+            <map to='#1f77b4'>
+              <bucket>%null%</bucket>
+            </map>
+            <map to='#2ca02c'>
+              <bucket>&quot;Score&quot;</bucket>
+            </map>
+            <map to='#d62728'>
+              <bucket>&quot;Miss&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='breaches/match/team'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='competitions+ (scouting2016)' name='mysql.0hed50t0bwmmev16qzrsq0csjaoq' />
+          </datasources>
+          <datasource-dependencies datasource='mysql.0hed50t0bwmmev16qzrsq0csjaoq'>
+            <column caption='count of breach/match' datatype='real' name='[Calculation_989103123872194581]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='COUNTD([breachID]) / COUNTD([matchesPlayed])' />
+            </column>
+            <column datatype='integer' name='[breachID]' role='measure' type='quantitative' />
+            <column datatype='integer' name='[matchesPlayed]' role='measure' type='quantitative' />
+            <column-instance column='[teamNumber]' derivation='None' name='[none:teamNumber:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Sum' caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_989103123872194581]' derivation='User' name='[usr:Calculation_989103123872194581:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]' filter-group='3'>
+            <groupfilter function='member' level='[none:teamNumber:ok]' member='1756' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[usr:Calculation_989103123872194581:qk]</rows>
+        <cols>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]</cols>
+      </table>
+    </worksheet>
+    <worksheet name='breaching distribution'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='competitions+ (scouting2016)' name='mysql.0hed50t0bwmmev16qzrsq0csjaoq' />
+          </datasources>
+          <datasource-dependencies datasource='mysql.0hed50t0bwmmev16qzrsq0csjaoq'>
+            <column-instance column='[breachDefenseCount]' derivation='Attribute' name='[attr:breachDefenseCount:qk]' pivot='key' type='quantitative' />
+            <column datatype='real' name='[breachDefenseCount]' role='measure' type='quantitative' />
+            <column datatype='string' name='[direction]' role='dimension' type='nominal' />
+            <column caption='Name' datatype='string' name='[name]' role='dimension' type='nominal' />
+            <column-instance column='[direction]' derivation='None' name='[none:direction:nk]' pivot='key' type='nominal' />
+            <column-instance column='[name]' derivation='None' name='[none:name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[teamNumber]' derivation='None' name='[none:teamNumber:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Sum' caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]' filter-group='3'>
+            <groupfilter function='member' level='[none:teamNumber:ok]' member='1756' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:direction:nk]' />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[attr:breachDefenseCount:qk]</rows>
+        <cols>([mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok] / [mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:name:nk])</cols>
+      </table>
+    </worksheet>
+    <worksheet name='num of matches played/team'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='competitions+ (scouting2016)' name='mysql.0hed50t0bwmmev16qzrsq0csjaoq' />
+          </datasources>
+          <datasource-dependencies datasource='mysql.0hed50t0bwmmev16qzrsq0csjaoq'>
+            <column-instance column='[matchesPlayed]' derivation='CountD' name='[ctd:matchesPlayed:qk]' pivot='key' type='quantitative' />
+            <column datatype='integer' name='[matchesPlayed]' role='measure' type='quantitative' />
+            <column-instance column='[teamNumber]' derivation='None' name='[none:teamNumber:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Sum' caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[ctd:matchesPlayed:qk]</rows>
+        <cols>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name='breachDashboard'>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
+      <datasources>
+        <datasource caption='competitions+ (scouting2016)' name='mysql.0hed50t0bwmmev16qzrsq0csjaoq' />
+      </datasources>
+      <datasource-dependencies datasource='mysql.0hed50t0bwmmev16qzrsq0csjaoq'>
+        <column-instance column='[teamNumber]' derivation='None' name='[none:teamNumber:ok]' pivot='key' type='ordinal' />
+        <column aggregation='Sum' caption='Team Number' datatype='integer' name='[teamNumber]' role='dimension' type='ordinal' />
+      </datasource-dependencies>
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='100000' id='6' param='horz' type='layout-flow' w='100000' x='0' y='0'>
+            <zone h='100000' id='4' type='layout-basic' w='84000' x='0' y='0'>
+              <zone h='100000' id='1' name='breaches/match/team' show-title='true' w='42000' x='0' y='0' />
+              <zone h='100000' id='3' name='breaching distribution' show-title='true' w='42000' x='42000' y='0' />
+            </zone>
+            <zone fixed-size='160' h='100000' id='5' is-fixed='true' param='vert' type='layout-flow' w='16000' x='84000' y='0'>
+              <zone h='7000' id='7' mode='dropdown' name='breaching distribution' param='[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]' type='filter' w='16000' x='84000' y='0' />
+              <zone h='8250' id='8' name='breaching distribution' pane-specification-id='0' param='[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:direction:nk]' type='color' w='16000' x='84000' y='7000' />
+            </zone>
+          </zone>
+        </zone>
+      </zones>
+    </dashboard>
+  </dashboards>
+  <windows source-height='32'>
+    <window class='worksheet' name='breaches/match/team'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='worksheet' maximized='true' name='breaching distribution'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card pane-specification-id='0' param='[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:direction:nk]' type='color' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card mode='dropdown' param='[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]' type='filter' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:Calculation_989103123858731021:qk]</field>
+            <field>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:direction:nk]</field>
+            <field>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:name:nk]</field>
+            <field>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='worksheet' name='num of matches played/team'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:teamNumber:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='dashboard' name='breachDashboard'>
+      <viewpoints>
+        <viewpoint name='breaches/match/team'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='breaching distribution'>
+          <zoom type='entire-view' />
+          <highlight>
+            <color-one-way>
+              <field>[mysql.0hed50t0bwmmev16qzrsq0csjaoq].[none:direction:nk]</field>
+            </color-one-way>
+          </highlight>
+        </viewpoint>
+      </viewpoints>
+      <active id='-1' />
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='breaches/match/team' width='110'>
+      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
+      cjhRDifqP3mBpoevTKcWAAAAAElFTkSuQmCC
+    </thumbnail>
+    <thumbnail height='192' name='breaching distribution' width='192'>
+      iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAABJ0AAASdAHeZh94
+      AAAOAElEQVR4nO3d22+b933H8ffDoyiSkiiJlpRYsh0f48SO5cTJmthO3KTdWhRoezGgu9jF
+      LothwC72R3R3G4ZhV8Puhq0bsAxb0jZLGsen2LFjx5KVWPFRsa0Tz+KZfMhnF8rcKRJayqVI
+      Ub/P68ok9MhfCHqL5EP+np/lOI6DiIEsy7Jc7R5CpJ0UgBhNATSNQzaTJpFIkM0XGzqiWChQ
+      d6BcLrPm81DHoVQq/9bvUbcr2DXn8b9LFZuaXaVaq69zfjMpgKZxyGYWePed98kViiylEuRL
+      FSrFPLFEmnIhTyKRIJNOky8u/1L/17/+E9MPE1y6eIl8oUClVCCf//rrMmly2Qz/88FpCqUK
+      xfwS6aU8pUKO9FLucTB3b1xnqbb87/TMBP/47++xeO8md2aTJOMxCuUymVSSdCZDPJGiXreJ
+      x+LYdb30A/C0e4Ctw8VTY2NEo7NE3Hnefv8yXn+Q/dt7uHjxc/Ye2IbjC5FM1/F1+fnBW8fp
+      GxrjwfRnWC435z46w/YeL/cTWcKD/SzEKgTcFTKZDGfOX6SYmKNquQn5Xew+coLenhAAadti
+      j8/6egYPQ2H4/O48g2M+rlyfohSIUJhNgadEn89HaGiAeDpPZPgZXn/pYPt+XJuEHgE2iINF
+      f3+Emftf4XdBte5lx64xBiKDuFl+emK5vBx9bid3Zhax6mUeLcQBDzt376C/bxCPy8Hj8eBy
+      uXCAcF8//kA3I9v6sQCcCnVn5d+w0X2HyS/MkE7MsVSxsCsl+gaH6I9EGI6EsOtgebxEenpa
+      /SPZlCydBm2mOoVCme7uLpbSKVy+blz1MuWqg8/nw+f3Ytt1HKdOdyBAoVAg0B0gnyvgcdUp
+      lGy6/D68XT7sSh3HqWFXy3i7gmCXKNkWAZ8bnz+Ay2WBU6NUqdPl9wJQq5ap4sZVq1B3uSnk
+      8vj9fizLDdRxW+Dy+cgkU/REBvB5zP77Z1mWpQDEWE17HyCXyzXj24i0XFNeBOtBpHlqlTzv
+      vH+B77x2hGuTUySLXrp8FttHRyE7x0yyzLdPHsfrtn73N5PfyewngZvQ3S+nmZq+RaB3kLCT
+      Y+Dp7SRSCTKpRc59coPR7aMY/tS9qfSj3GT2Pn+UwbAfnDrXb8cZPzDGH//gFDcnJnD5Qkx/
+      eo5kodruMbcMvQ+wCe3ftw+nXmfn/v10UePjT65z9LU38Rbnmcs69AS87R5xy2jKWaBsNks4
+      HG7GPCItY1mW1ZRHgFqtRjabbca3EmmppgTgdrv1CCAdSS+CxWgKQIymAMRoCkCMpgDEaApA
+      jKYAxGiNBeA43Pr8Oo9iGQByqQWmvryPPgQqna6hAHJzX/Ag34WrVgYcLl2+TmnxNov52gaP
+      J7KxGnonOJ/NkFuyuDa5wMjwIJbHQ2/QQ7FcJesUKJfLeid4kyiUynz02c0nOvbZHU+xcyTa
+      5Ik2t4YCGNi+h8CDSXyhPmKxJNGwj+mFIqcO+en2dG30jLIO3YVZvvfLk0928B/9DEZ+2tyB
+      NrmGAvAEo3znrW8/vh2NHufQho0k0jo6CyRGUwBiNAUgRlMAYjQFIEZTAGI0BSBGUwBiNAUg
+      RlMAYjQFIEZTAGI0BSBGUwBitMYCqGd5++dvc+ureQAun/mAj69cpWRv5GgiG6+hACqJeTKO
+      m3K5AjgsxOPUKhUctBmzdLaGAnC6+vn+H55i5tYX4DiMv3KCQV+Jh/EC2WyWcvm372Yuslk1
+      tCLM1x1mfmKCY996jVg8iY8yleAozw8FcVnaq0o6V0MBWG4fh8Zf+vpWCBgk+vTGDSXSKjoL
+      JEZTAGI0BSBGUwBiNAUgRlMAYjQFIEZTAGI0BSBGUwBiNAUgRlMAYjQFIEZrMACbaxcvPF4R
+      thSf5foXt7VJnnS8xhbEFBaZzXoYHR4EHC5fu0E9OcOCNsmTDtfQeoBq1cVAxMuvT5/n+989
+      geX2EOr2UC7b2iRvi/vF5BxfJQvrPq4n4OVPXh7bgImaq6EAHJebajFHb6SfWCzJcG+A27Ei
+      bxz2EXD7N3pGaaOfX3nAh9OxdR+3Y6B76wTgD0c5ceI322dGo4Mc3LCRRFpHZ4HEaApAjKYA
+      xGgKQIymAMRoCkCMpgDEaApAjKYAxGgKQIymAMRoCkCMpgDEaApAjNZwAAt3PuVX56YAuPjh
+      e9okT7aEBneJLPNgPoZTrQF1Yqkk1WKRuqNN8qSzNRRAanaGTNFmPh7DceDFV04S7arwKKFN
+      8qSzNbQiLLJ9H2+OjLKQLJOIJ+ly26R6d7FnOIS2yJNO1lAAALgDDEUDj2/2D2/EOCKtpbNA
+      YjQFIEZTAGI0BSBGUwBiNAUgRlMAYjQFIEZTAGI0BSBGUwBiNAUgRlMAYrSGA7CLKe4+WN4p
+      JLXwgKs3pqlrkzzpcA0G4DB17QJf3J4DHK5OfIE7+5CFnDbJk87W0HqA3OI94kUXhWIOcLDc
+      Hrr9bioVm2x24zbJu3X3Lrfv3XuiY986eRKv19vkiczzQ/d5XvBMrPu4PvcQcKr5AzVZY3uE
+      9QxzcE+Jqa+qxGJJnu4Pcide4o0XfHRt4CZ5e2f+hb1n//rJDn51Brx9zR3IQD9yXwDPe+s/
+      0PMM8LOmz9NsDQXg7epmZMdBRnYs345GB9m/kVOJtIjOAonRFIAYTQGI0RSAGE0BiNEUgBhN
+      AYjRFIAYbdUbYdVSnnS+QtDvouJ46Qt3t2MukZZYFcDc/WnOfnab3mCA546dpK/5H/ER2TRW
+      PQUa272fSChAKBzGoydIssWt/hW3XFQrZer1Ovq4v2x1awYwMjKEZblwW7r6v2xtqwNweXn2
+      ucMcGBtgLpltw0girbM6gLrNjauXOD8xw+7tUQDsQpKzZz7k9MefAXDhg19okzzZEtYIoEoq
+      b7O938+9uQQAnu5+9u8colCsAHWSS1nK+Ry1eh3HcXAcvVqQzrQqAMftI9rXTaZYZ7i/B4BK
+      LoXdtQ3KGWy7xvixVxnw28ylCuRyOarVassHF2mGlQHUbS5e+JhnXzzOSKSLir286N3XHSaf
+      XODVkydZWsoR9LvoGtrH7qEQ4XAYn8/XjtlFfm8r3wirV6i6Avg9FjtGR7iVXGLnth5wedh7
+      4Lnlrwn6gQh90dYPK9JsKwPwBNgzHOLs2TN4/SGOHdvdprFEWuMbrwEsntq1j36/Q61mk1gq
+      tmcqkRZZfRbILpHI5IjH5lhM6X0A2dpWB+AJsH1sDMu2GRnsbcNIIq2zxiNAnps3p+np6+Gr
+      +WQbRhJpnTUeAboZGeynVKrQ3xNsw0girbP6ynB2kawT5MTrLxPoVgCyta3xYTgf/lqKX394
+      hvlUvg0jibTOmp8FKhRKdPm9LKZybRhJpHVWBuA42HgZiPSSL1YY3aarK8vW9o0Aanx54yqP
+      lmrsGB3B0pow2eJWBuDycPDwOH3uErFEmkS21KaxRFpjzWXvDpCIx/G4tSpetrZVv+FLmTTB
+      yBCHx19i90gE+M2KsMsTtwCHm9cu8cv3T1Oq6SmSdLaVAdRKfDoxzdiu3YSdNFMzi8D/rQgb
+      Jp5IAQ6zqRy7BywWl7QQRjrbyjfC7CqpdIq7d+5AOUOlNrB8dylHYHAn9cmPAAunViNfhKDb
+      IpvNbtgmeaaYeJjmz//56hMde/qvTuF2dcbVO2L3JrnyH3/7RMe+9OO/JLrr+SZP9M0AfEHe
+      fOM40zcmmEuXeH7P8mlQl9vN7RuTHHn5W8RiCV584SD3YkWGw15clnZi/H2V7ToPklv/o+dR
+      e57vLf3bkx1s/wTY6ACwCPrdZG0fx48fpzu0/Ffd5Q0w/tLLK75yfFvTZxFpuVVrgicnPye+
+      8IhLZz/k7sJSm8YSaY2VjwBuL+Pjh8hU/RzbG+FzAx6WxWyrT/R7Qzyzzc+nX8Z47pnhNowk
+      0jqrA6iVmb75JbMP73FvLtWGkURaZ823ekP9gwTcDuWqrn0oW9vqBTEuLyGPQ2VkFyMDPW0Y
+      SaR11lgTXCSWypJOLjAXz7RhJJHWWf0IYHnoHRxiOBRh966hNowk0jprbJBhkVx4yI2pSRaS
+      WhEmW9vqAJwajivA6GCYdL7chpFEWmflU6BalSuXL5NIp7GrPkJtGkqkVVYG4PJw9JUTHH1l
+      +aalPcJki1sZgGXh0i+9GKShNY9OrcLE1SvEv75adHz2Pp9ojzDZAhoKoFLMMbr3WS6eOwM4
+      3Lh5h0MvHMa/+iSqSEdpKAB/MEL87iRjew8BDuGAn7PvvcujZPHxijCRTtRQAOnZac5NPMBD
+      lVgsQSDgx3F7Cfg9hMNh/H7/Rs8psiEaehLT9/QB/uxPDzy+HY1GObhhI4m0ji78I0ZTAGI0
+      BSBGUwBiNAUgRlMAYjQFIEZTAGI0BSBGUwBiNAUgRlMAYjQFIEZTAGK0hgIoZeY5c+YM5y5P
+      Ag5Tn17g3V99QFGb5EmHayiArt5h/uDFg2SXsoDDQqbE3m1eYtokTzpcQwti7FKG0+cnef3U
+      SZY3ybPJFuqEDN4k77P//Dvmbn687uN83b28+Rf/sOK+I9YdLvt/+kRzuLgHuJ/o2E73o78/
+      z8NUYd3HHd8zyN/8ZBxoMIBSPk8w6Of+/YdE+4K8fPTQ403yLEM3yTtSucqR4jvrP9AVXXWX
+      17KJWroQ8Xol8xXiucq6j8v8v8uZNBRAaOApXnvtqRX3HR5Y9/8rsunoLJAYTQGI0RSAGE0B
+      iNEUgBhNAYjRFIAYTQGI0RSAGE0BiNEUgBhNAYjRFIAYreEACul5kvnlj5EuPrijTfJkS2gw
+      gDIf/ffbPEyVAYep6TscOPisNsmTjve/EXHiHj0T7qgAAAAASUVORK5CYII=
+    </thumbnail>
+    <thumbnail height='192' name='num of matches played/team' width='192'>
+      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
+      SURBVH0YiiqVR8YAAAAASUVORK5CYII=
+    </thumbnail>
+    <thumbnail height='192' name='breachDashboard' width='192'>
+      iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAABJ0AAASdAHeZh94
+      AAAZr0lEQVR4nO3dyXMbZ5rn8S/2HQQIghvARRRFSaRW2+Wtlo7qstsd3X2Y00RfuiMmqucw
+      8xdMHyrCMZe5z2Ui6jBT3V0RvUTXVLnC426Xbblsy5ZMS6JEiZQo7jsIkACxr5mYA2WVIIsJ
+      kqIIAng+F1HEy8RDgD9kvm+++aauXC6XEaJJ6WtdgBC1JAEQTe1xAMbHx/f9wwtT4yTy2m02
+      NzZQ9nGQpeQS3Jua/8P/CxkiscS+a2s0z/v+pLa3SOdLVX9mfWGK0FaccCS6a5t8OsF2fJvx
+      e1O7b6isEg5H9lvykTO8++677wL86l//mZYWD05PKxtrK4RDYVxuJzPTMzhbvGyFVghFE3g9
+      LUTDa2xsJbl77XdkjF4cditWI0w/nMbm8pCMhtiMZ2lx2fjVr98j0N1JaHWZfL5ALJHBZirz
+      YHoWh8vDb/7ufxI3B+j2Wnn4cBqTkuK9Kzfx+7x4PW7GPv+QUDzJr9//hOGzZ4lFVknmVMwU
+      mZqZw+n2sh0Ns7q8Qr6QI5Ep4Hbaa/yyHr7nfX/ujX6Kam0jGYuwuZ2ktcXN/Ow0y6FNOvxt
+      AGyGVvn0w/dJKUYW1jbx2fVEU3m++uCfmImbcemLhDc3WJp9wFYqzZUr1+js7sLrtLAa2YZC
+      iuhmiJ//4l8IdrZw7dZDTvV18HBmAY+3lUhohZXVDVq8rRj0uhq/ojseB+Cb61/S0enntx9+
+      wb2vP6Xr1Hk++r//wNrmNp99fReHGuMX/+cXWJwtXPlqjHafl8TGAorFy7998AGLE1+zEI7x
+      +y9vcXf0U4zuDtzqJnFDF3c//S0lI7z30Shzd67Tf2aIf/nl3zM2E8GQCdE2cIlPfvNLvJ0B
+      DGqRG5PzRGduYu85x/j4OK+fDXB9Ypkue55//O0Vbn55ha7+AX79z79kcjnO/W9+j5ECH40+
+      5M71r3j9B2823LHd874/HmMOk8PNP733Mbm1CabmV3i4FmPsxk1++P3XSG3M8Xe/+RRrOU1L
+      azuz6zFGr/wWuy9IfHUaU9sA9z57D8XThymzQaxoYHVxDV1ymY14hi9uTWOMz7KWKjMzu8zl
+      iye5ceMhk7e/xNvq4sPPbjP6xUd4bPD1wy3OD/XW+iUFvtMHKGMwGDC7fFweHkQpldAZTLx0
+      8QJfjt7htcvDbEejgB61rAIwfOlVjOU8pZKCTmfg8uWLvPXW21z53e+4+s0kP3jtHGDh0sWz
+      tHUGCLS1cO2Lzzj98vfJp+K0er0UCnkURUWHDlVV6Qz0MdDbyer0HVp7RmjxtoKqkM9nUctw
+      cuQSD0Y/48LrPyQTT4DFycWzJ+kM9NPWYkc58pfxqBz8/fF4PQB0BHo52R/A7nAxdu1zhi+9
+      AoBSKqCWdz6VWx61fevtt/noww/xtnopFQqo2Hnl1fP4PJ6KqgxWK9vry0zPL+Fo8WJExep0
+      YgTKZaCsAjrsbh+XRobIpNNH8WLtie7bYdDNjTU2YylOnjpFOLRGIBCglM8wPbtIsH+AfGKT
+      ZLaA09OGmomRUYy4LGVcvgDh9WW6O/1Mz8zR1TtANraBYnRg0qu0t7ezsbqK199KJJbGpOZx
+      eb0sLq5id9jpaHUxv7rFyZ52ZuaX6AkGSWaL2PRFMgUFr78Tm0nP0vw0Ll+ATCxEyeig2+dk
+      dmkdh8OOnjL+VjextIKaT9MRCDTcHuB5358WhwWdyU4ik8NlUklsR/n46g2m5pb5H+/+LQCh
+      lUXi6Szd3UESmRy6QhKdpQV/i5WH86t4XXb8gQDF5DZZBRLRKJhs9Pd0sbY0T7ao4u8Mktpa
+      w+TyUMgUaPc5mVlYZfBR3R1tHiLxPF3trTV+RXfo5DxAcyorRWZmZmntCODzuGpdTs1IAERT
+      q/sjhfD6MhMTEyTSu4/HFrJJktkiqVTyO48lEjLEehiWF2aYmJhAa6Q1uR2lqEIylfrOY1rv
+      Q/pRnyEajYJaIKXxXu+X8dC2VCPtXT3MLV5HzUS5vZCg3WUmni9TSkcpKDp87d04CutcncnS
+      bUvRO3SRSDhKrpTFoDMRjawQ6DuNVVfAaLUS3sryyuXhWv9adaenv53r15fZXJsjUzJiVNKU
+      jSYi62EMZgu9p4ZZmbxD1urHVozS3jtEbH2DtFrCpDMSja4zePocmegGTncL6bKV4ZNBisk1
+      1uJ2Tjng5pdX6Dl9hsR2mTJFWr1OEokkJqsTtwWwuukPdu2r7roPwLfu358kmYF8m4P10DYd
+      Pg86HayvLjLoN+PvaCe2tIgyP8/c3BYnB/xk9SXKFgfJWIS5jVVaWx3oHYO1/lXq2uTkJEZ7
+      KzZ9nu3tKB5fgFI6xdzKFmaDHa+lyFp4m7Qyz+L9OQaHB0kVSuTNNsLzt1na0tFimGbgzf8A
+      wOJKnP4z3QC4/EFSG0tsp6zEohuEA/20W3WUCjFWIuu424P7DkBD9AESiQR2i5GlUAyPTU8O
+      M06rCYAyYDPpUPRmcpksidgWVocHm82ECpTyGYplE+ZyHp3ZjtFowe2y1fT3qU8lEok8ejVH
+      oqBDV0hjttswGcw7w6AmGzolj8PtJB6Lk0jEsJsdWBw2VBVKSg6D2Uk6GsLlacVsc2Mz60mn
+      0zgcDmDnfXZYjCQyBWKxKE6PD6tRB2VQCmkUo5M27/469AcKQLFYpFgs7vfHxD7p9XqsVuu+
+      f05RFAwGwwuoqPEc6BCoUCg8TqV4cdIHPGGUy+Xq5v3Z2tqikEmynVOx6VUCJwZYmV+gb2CA
+      o5gtUfejQKJ+hZam+fUHn9DZ5efh1AxbK9N8+MH/Y2x6lXxJPZIaNAOwsTzH6NgEKnB37AbL
+      6+EjKUo0h87eU7R7bCzdv82J89+ju7eHjbV1yukIi5uZI6lB8xBoYWkZRWehpEIunyMSieD3
+      uuX4XxyaN994A4sROp1e1ha3+Kuf/pS1pRX6upxH8vyaAejv62N6IUQqncLn85HIg9VqRVEa
+      d7pZI1BVlUzmaD5Bn5fdvjN1XSlk6OjqppTP097hJ3tE9R9oFOjJoSnx4hz0dZb3Z++kEyya
+      mgRANLUXPhVici3Of39/8kU/Td342V8MM9LdUusyxCMvPACJXInrc7tfYN1sEtnqF6aLoyOH
+      QHUstbnO2OQMAKuLsyyuhGpcUf2RANSx+dl58sU8KhDajLG5sVLrkuqOBKCOdff3kQ6ts5VI
+      oeQzFBQduVxOTlTuQ8NcD9CMfB0BfvJOAAD/mz96/H05Ubl3sgcQTU0zAGWlwNzCznFlMrZJ
+      LFkfp9eF2CvNAIyP3SSWSKACD2bmmHlw74jKEuJoaPYBSiWVYi5GVt25tFAH0skSDUUzAJdf
+      eYXl9S3K6SRnBwcoGe0yG1Q0FM0A6I0W+nq6H/2veVcPE41LRoFEU5MAiKYmARBNTQIgmpoE
+      QDQ1CUCdu3r1KiDL1hyUBKCORVbniad3LrD5dtkaOVG5PxKAOmYwWTGSZ2t7Z9mab9cSNZlM
+      tS6tbsh06DrW2t7FO+/sLAfu85ytcTX1SXMPsHjvFl8/uuTuqy9+L8eYouFoBsDk9pBcmiOj
+      QqvXw+zcnBxjioaieQhksVjwBXpQ0inMFgu9Qb9MhhMNRTMAvo4Avo6dS+5cLjnGFI1HRoFE
+      U5MAiKYmARBNTQIgmpoEQDQ1CYBoahIA0dQkAPWsXOJX//obAEa/+pxrozdrXFD9kclwdezh
+      +C3ShSL5EhgsdgyUZarKPmkGILW5znQ4zeXhQVYXZykZHPQFO4+qNlHF0MVXsbd2U8wm6fB5
+      UYwOmaqyT5oBmJ+dJ29tebz+PMQkAMdMsCcIgNMl6zYdhGYfQNafF42u6mQ4WX9eNDIZBRJN
+      TQIgmpoEQDQ1CYBoahIA0dQkAKKpSQBEU5MAiKYmAahjxVyapdUQAJsbq7Jw2QFUDUA8Hgfk
+      BT6OckWFB5PjAExMTGKz2mpcUf3RDICST/L+v18B5AU+jspqGb/DQUqBEyeHmJocl7la+6QZ
+      gPnZBUx6hXxJXuDjyGo24O0doJxJ4bCaOHPuoqwOvU+ak+EGh8/THuijkK18gWUy3PFgtjnp
+      Dzp3/uNy1raYOlX1ijB3i3vnC3mBRQOSUSDR1CQAoqlJAERTkwCIpiYBEE1NAiCamiyMVUeW
+      p+8ytbpNq8/PS+fP1LqchiB7gDrS09uDWlKxWCy1LqVhSADqShlFVTEaDLUupGFUDcDVq1cB
+      uH/vNvceTL/wgoQGvQWPy8pGeGdWbiyyztXr3wDy/hyUZh8gsjpPPF0CIJ0rAtsyGa6mdOQy
+      aTxdfQB4/V0od+6SV5/v/bk+t7XrY0GvjaDX/jxFP7cXWZ9mAAwmK0bybG0ncVhNsvhqralZ
+      CmUryVgUgK2NVUz2FjLp53t/Xv/7gd0f/KP/Bj/+2+ep+rm9yPoqA1AucfvmLUxuPyNDJ2ht
+      7+Kdd7oA8HkuHfhJxOEo6Jz0tVux+k8AO0tXvvnoPs7ec/L+HERFH2Dm3jcshFNYzDKf/Di6
+      NTbG0PAFNlYXa11Kw6jYA/SfPE3BnqGQTdaqHqHBbTVy6/YdXO62WpfSMCr2AEaLg2R4BQwy
+      znwcDZ89xdRiGJRcrUtpGBV7gOWZScKJDAZ7vlb1CC1GG71tDkxWuTjpsFTsAXr6gizNLRHb
+      jtaqHqGlmGIzmmItslnrShpG5SiQxcf3zveSt8jtdo4lswM1n4ZSqdaVNIzKM8HFOKHtEu2t
+      nhqVIzRlY+hcbQS6u2pdScOoDECpSEEt16gUUZWlBatRh16VM/GHpSIAi+vbnD4RoLPTX6t6
+      hIayWiKXTZHIyiDFYakIQF9fkO1olDvjk8DOZKs7E1MAzM9MydKINTZ1d4x0rkippNa6lIZR
+      EYCpyXukCwr+Nh+wM9kqsraICizMz5HPyydPLZ0ZGSFX0kMpC0A+k2BheR2QtVsPqiIAp08P
+      4u/qJ5P8w2QrXVnPZjxFX38/a2vrMhu0hsKbCSzFLayenZuV50tl1pfmKCFrtx7UU8OgXhzl
+      RRxdPcCj+wT/yc5kq/aWswyc2mkms0FrY30rwV//p59yZ/wuEKCUSeBo7cTIH9Zudb78snxA
+      7UPlKFBuk0+u3uHBw4c1KkdoUXJJrnz8MYncTh+grDdgUEtsJ2Vx3IOq3ANY2xgZ6sbT2lqj
+      coSWCyND/PvndznTvjMZztfeja/90YOyduuBPLUHiJLCjcMmnyDH0cLKBm6HiVgsVutSGsZT
+      1wTr0Cs5VJ25NtUITYP93eRKejnGP0SVAdAb0KkK24l4jcoRmow2KKax2mS057BUngeYnsdu
+      M2EyynpZx5KqYLHZKcpkuENT8Zce7D1B/5ATi0nWnTmWyiorkTiX/b5aV9IwKi+ImR7n5lSI
+      UyPnefWCLL137BitBLx2uSDmEFUE4MzICItRHbmk9AGOpUKKTEmHKjN2D01lJ9jiZSDQwtDp
+      00DljZiTsU1iycyRFyieIIMUh64iAMvT91jc2GZtfeeP/skbMT+YmWPmwb2jr1A8JoMUh6/i
+      lezp7eH+YvTx6sNP3oi5DOhAJsPV0OmRS5yudREN5qmPksrVh7+9ETOZJGcHBygZ7bI04jGy
+      GVphJZLk0vmzrC7OUjI46At21rqsulIZgEerD6dSKeCpGzEjF8ofN22dQaZnrlICQpsxICYB
+      2Ken9gA6TCYTiiqf8PVgenyUeF5PKplCyWdQjI4Xeoh67Wev7/pY8Md/Q88f/82+tjfxv/8r
+      iflbh7a9vfrLn1/j+tzONS9PLY5bJBpL4PV3vJAnFofr1IVXeXSJBq+++aPH339Rh6hvGO7v
+      /qAusu/tjegXYbdtHmB7B1E5DGq0YtSpqIqcahfN4al1gVKU9Dbp5Iqm8dQlka38+Iffw2CU
+      6wFEc/jOGRWTSa4FEM1D7hIpmpoEQDQ1CYBoapoB2Ayt8MG/fUQJ+OqL38vKY6LhaAagpcVN
+      S6sPI9Dq9TA7NyeT4URD0ZxXu7qyitvpYDuZwmyx0Bv0y2Q40VA0A9B/6uzjrz2usxothahP
+      0gmuY4Vsgi+ujQJwd+yG9NEOQAJQx/QmOybdzuFoLp8jEolIH22fJAB1zGg04na7SSZT+Hw+
+      9Hq9LI67T3JxaZ0bHh4BwCV9tAORPYBoahIA0dQkAKKpSQBEU5MAiKZWdTLc7bs7Fy2vLs6y
+      uBI6kqKEOCqaAWjrDJKNbz1ed2ZzY+WIyhLiaGgG4Ol1ZwqKTs40ioaieSLsqNedEeKoSSdY
+      NDUJQJ1LJpM7/8r9Gw5EAlDHsskYv796HZD7NxyUTIarYzaXF793Z/Xu43T/hokP/heJ0Owz
+      H3N3nmTkz/5LTZ/3Z8Z/IGHaWZRXAlDnhoeHSSWP1/0bRsLvw9LVZz+o+wHwYgKw1+d9clFe
+      CUCdc7tbHn0l9284COkDiKYmARBNTQIgmlrVAHw7zry5sSqrDoiGoxmAJ8eZJyYmsVltR1KU
+      EEdFMwBPjjOfODnE1OT4sRhnFuKwVB0GHR4eJplM4bCaOHPu4rEYZxbisFQNwONxZpdTu6EQ
+      dUhGgURTkwCIpiYBqGPpWJg796cBmJ+ZkmHqA5AA1LEHc0sUMgkAFubnyOfzNa6o/kgA6pjL
+      YiAcS5JKpujr72dtbV2GqfdJZoPWsaFzlxk6t/O103WWgUcXcMsw9d7JHkA0NQmAaGoSANHU
+      NAPw5D2o7t+7zb0H00dSlBBHRbMT/OQ9qNK5IrAtowyioWgG4Nt7UKWSSRxWE4rRIZPhREPZ
+      w2zQnXtQnT136YUXI8RRk06waGoSANHUJAB1bGNpli9GxwAZpTsomQpRx5bDUax6HfCHUTqx
+      P7IHqGPB9lZyqv7xKJ3V6al1SXVH9gB1rLP3JJ29O19/O0qXy+XI5/PodLq9b8j/0u6Pmdsg
+      k9lfO9dJ8O+yVLv75N7aHdHz6srlcnn3rT9bOp3G4XDsqe31uS3+8ufX9/sUDesf//PrvHHS
+      t6e2+3mdq/1cLBbF6WzBZDJotlMUBYPBUPG9vbbLZDLY7fYDtXuW59nes9o963eRQ6AmkApN
+      87sv7zA+Pl7xfavV+p22s/fvsRLerNJOJZ3OfudnLRZLxf+VUoFwOExkfZ28sns7gEgkzNi9
+      yk78s9qFV+eqttsKrTA2NsaNG7cqnvdZv4sEoAk4Owbodyl4u3orvv/dT0iFqds3GJuYrdIO
+      7o6NcuPOhGa7cqnArdGv+Oizr1CrbG9tfhK1XDnF5ln1jd28t4d2UFZVioU86lPHN0+31QyA
+      XHPaGJJrMzzYKhFbX6ra1tvdi72cYXZpTaNVmfkH91lc0/57MFqdBIMdqJlcRQCeFllbweho
+      RV/l8ziytkjJYKaQ156L5usMUkyHGB97gFbLrdCa9jPKNaeNQGEzpXKqqwV3a3uVtjpMJjPO
+      Fg9Kbvf7jeUyWX709lsEOqptD5wON8HBASwaf2mJ2AY3b95mfmlVc1v+7l6cFgNOh3b/YXsz
+      zMC5H/D2n/4Ip8Ywj6+zW3sUyGUxMB2KP77mdGVtnWCnX2aD1hUDbR4rc2FdRQf4WR7cvcVi
+      aBOHW+G1ly/v2m78zhiJrILH7a767Pl8ESMKpTIYdxmYOnHmEkVVRziltZ8A0GO1mklntG8G
+      6HQ5+eaTjynoHQT6T2LR+LU1AyDXnDaCAuFUmTMnThAIdmi2PDV8mWy2gM6hPUrltNvI5FMU
+      0Q7U3OQtJmZX6e8NotMYa9QbDFitNgzp6ne5tBkNRKscAm2sLePr7sdiMlFtNFjOAzSBhen7
+      5BUDWeUCg33du7bbjIQoFMu4TSbN7Q1ffAnvepjOrk7NdifOXCCRSnN/bokLL2mM5QMljPi9
+      1W7zVCaeyWCqMjRsttrRJ3KYbfZd9zrfkgA0PDM/+dM/31PLjs4ubn99jZKlpWrbmYkx5lYD
+      fP+VC7u2WZq5TxYbZ4dOovV3qJQKREIrpFQrQ6e1n9dssVEopFhYCdEffHYA/V09uLx+ysU8
+      JRXMBz0EEo0hE13lo28eMtTbzdmzu/+FKaUSFpeXUjZZdZsWs4VkTntQpG/oPH17qK9cKpAr
+      lhkcrN46lUzSNXBm1z9+gGh4jS+/+IyNlIG//qv/uGu7fD4v5wEan8p2Ik16K0Shyufd6tI8
+      4Y0QOnO1G6GUyRdLmI3afYC9Mlqd+FwWItF41bZ7mbjg8XUwOHyJn7x6jqJG88nboxKAZhBb
+      XyIwdJ7UdkyzXe/AKbo72lCVUpUt6vF4vVgs2n2F/Ujni6S2t6q00lHMpZiaXdSuzmDAZtIR
+      TuawamS0PXBCAtD49Iy8/mPazCVGzo1Ube3xtuFt0e6MZtNpek8OYSxXC8relPIZLDYng0ND
+      VVqWMeqMmC3mqttMxrdJxre/MxXiSYFgUALQ+BTujo2RLZTYjlc7xChze/Q6M5pngSG6FWZl
+      ZQWXZ2+T+qp58GAKa1mht1v7xNrs1H06B8/Q0Vrl/EO5jNXhxGYxo9fofUfDa9IJbnwGTp/q
+      5+rNSeyZ705gq6Tjj//sL8ir2n8Wgd4BAodXIB63g/mlOLfu3uel82d3bZfKFEgnkwxffkVz
+      e5Pjt4hEtlDtXs1hUI+vQzsA0/fGeBhK8Odv/RGjX32OYnTwxqsva/824thRSkVMZkvVM/hl
+      VWH02jV6h1/ixBHVBhA8MUTwRLXDH2jzeTCaLWxGtvC6dj8XYDQYUEpFUFUUFXbrq+sNBu0A
+      JPIKHY/uEmmw2DGw70sHxDFgsDgo51PojNpngsdu3ODi915jLbSp2a5W9rrnGTp3iaE9LuOj
+      2Qc4c6IXo21nYawOn5e2juCeNiqOF7WYI5wq0u3TPnZWSgVCoRC5QvPM9fr/DBZVHABtmnUA
+      AAAASUVORK5CYII=
+    </thumbnail>
+  </thumbnails>
+</workbook>

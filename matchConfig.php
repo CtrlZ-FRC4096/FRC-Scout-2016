@@ -116,7 +116,7 @@ $CURR_MATCH;
                     <div>
                       <h2 style="color: white">Team 1 <br>
                       <select style="margin-top: 6%">
-                        <?php printTeamSelectionOptions() ?>
+                        <?php printTeamSelectionOptions($LEFT_TEAM . "1") ?>
                       </select></h2>
                     </div>
                   </div>
@@ -124,7 +124,7 @@ $CURR_MATCH;
                     <div>
                       <h2 style="color: white">Team 2 <br>
                         <select style="margin-top: 6%">
-                          <?php printTeamSelectionOptions() ?>
+                          <?php printTeamSelectionOptions($LEFT_TEAM . "2") ?>
                         </select></h2>
                     </div>
                   </div>
@@ -132,7 +132,7 @@ $CURR_MATCH;
                     <div>
                       <h2 style="color: white">Team 3 <br>
                         <select style="margin-top: 6%">
-                          <?php printTeamSelectionOptions() ?>
+                          <?php printTeamSelectionOptions($LEFT_TEAM . "3") ?>
                         </select></h2>
                     </div>
                   </div>
@@ -145,7 +145,6 @@ $CURR_MATCH;
 
                   for($i = 5;$i>=2;$i--){
                     $defense = $CURR_MATCH->getDefenseAt($LEFT_TEAM,$i);
-
                     if(is_null($defense)){
                       echo "<div><h3>Slot $i</h3></div>";
                     }
@@ -197,7 +196,7 @@ $CURR_MATCH;
                     <div>
                       <h2 style="color: white">Team 1 <br>
                         <select style="margin-top: 6%">
-                          <?php printTeamSelectionOptions() ?>
+                          <?php printTeamSelectionOptions($RIGHT_TEAM . "1") ?>
                         </select></h2>
                     </div>
                   </div>
@@ -205,7 +204,7 @@ $CURR_MATCH;
                     <div>
                       <h2 style="color: white">Team 2 <br>
                         <select style="margin-top: 6%">
-                          <?php printTeamSelectionOptions() ?>
+                          <?php printTeamSelectionOptions($RIGHT_TEAM . "2") ?>
                         </select></h2>
                     </div>
                   </div>
@@ -213,7 +212,7 @@ $CURR_MATCH;
                     <div>
                       <h2 style="color: white">Team 3 <br>
                         <select style="margin-top: 6%">
-                          <?php printTeamSelectionOptions() ?>
+                          <?php printTeamSelectionOptions($RIGHT_TEAM . "3") ?>
                         </select></h2>
                     </div>
                   </div>
@@ -267,12 +266,12 @@ $CURR_MATCH;
 
   $(document).ready(function(){
 
-    $(".blueSide select").eq(0).val("<?=$CURR_MATCH->blue1?>");
-    $(".blueSide select").eq(1).val("<?=$CURR_MATCH->blue2?>");
-    $(".blueSide select").eq(2).val("<?=$CURR_MATCH->blue3?>");
-    $(".redSide select").eq(0).val("<?=$CURR_MATCH->red1?>");
-    $(".redSide select").eq(1).val("<?=$CURR_MATCH->red2?>");
-    $(".redSide select").eq(2).val("<?=$CURR_MATCH->red3?>");
+    $(".blueSide select").eq(0).val("<?=(isset($CURR_MATCH->teams['blue1']) ? $CURR_MATCH->teams['blue1'] : "")?>");
+    $(".blueSide select").eq(1).val("<?=(isset($CURR_MATCH->teams['blue2']) ? $CURR_MATCH->teams['blue2'] : "")?>");
+    $(".blueSide select").eq(2).val("<?=(isset($CURR_MATCH->teams['blue3']) ? $CURR_MATCH->teams['blue3'] : "")?>");
+    $(".redSide select").eq(0).val("<?=(isset($CURR_MATCH->teams['red1']) ? $CURR_MATCH->teams['red1'] : "")?>");
+    $(".redSide select").eq(1).val("<?=(isset($CURR_MATCH->teams['red2']) ? $CURR_MATCH->teams['red2'] : "")?>");
+    $(".redSide select").eq(2).val("<?=(isset($CURR_MATCH->teams['red3']) ? $CURR_MATCH->teams['red3'] : "")?>");
 
 //    $('.redDefenses h3,.blueDefenses h3').flexVerticalCenter();
 
@@ -344,7 +343,7 @@ $CURR_MATCH;
       totals.D = 0;
       var toastSent = false;
       var stop = false;
-      var data = {matchID:$("#matchSelector option:selected").val(),
+      var data = {matchNumber:$("#matchSelector option:selected").val(),
                   compID: <?=$currCompetition->id?> ,
                   data : []};
       $(".<?=$LEFT_TEAM?>Defenses div[defense-id]").each(function(){
@@ -427,19 +426,24 @@ $CURR_MATCH;
       var duplicateTeams = [];
       toastSent = false;
       $(".blueSide select,.redSide select").each(function(){
-        if($.inArray($(this).find("option:selected").val(),existingTeams) != -1){
-          if($.inArray($(this).find("option:selected").val(),duplicateTeams) == -1){
-            duplicateTeams.push($(this).find("option:selected").val());
+
+        if($(this).find("option:selected").val() != ""){
+
+          if($.inArray($(this).find("option:selected").val(),existingTeams) != -1){
+            if($.inArray($(this).find("option:selected").val(),duplicateTeams) == -1){
+              duplicateTeams.push($(this).find("option:selected").val());
+            }
+            stop = true;
+            if(toastSent == false){
+              toastr["error"]("A team has been selected more than once.", "Validation Error")
+              toastSent = true;
+            }
           }
-          stop = true;
-          if(toastSent == false){
-            toastr["error"]("A team has been selected more than once.", "Validation Error")
-            toastSent = true;
+          else{
+            existingTeams.push($(this).find("option:selected").val());
           }
         }
-        else{
-          existingTeams.push($(this).find("option:selected").val());
-        }
+
       });
 
       $(".blueSide select,.redSide select").each(function() {
@@ -473,6 +477,10 @@ $CURR_MATCH;
            if(data == "Success"){
              toastr["success"]("The match has been updated successfully", "Success!")
            }
+            else{
+             toastr["error"](data, "Error")
+
+           }
           }
         });
       }
@@ -485,7 +493,7 @@ $CURR_MATCH;
       $.ajax({
         type: "POST",
         url: "/util/php/serve/getMatch.php",
-        data: {matchID:value,compID: <?=$currCompetition->id?>, records:false},
+        data: {matchNumber:value,compID: <?=$currCompetition->id?>, records:false},
         async: false,
         success: function (data) {
           data = JSON.parse(data);
@@ -533,12 +541,12 @@ $CURR_MATCH;
           })
 
 
-          $(".blueSide select").eq(0).val(data.blue1);
-          $(".blueSide select").eq(1).val(data.blue2);
-          $(".blueSide select").eq(2).val(data.blue3);
-          $(".redSide select").eq(0).val(data.red1);
-          $(".redSide select").eq(1).val(data.red2);
-          $(".redSide select").eq(2).val(data.red3);
+          $(".blueSide select").eq(0).val(data.teams['blue1']);
+          $(".blueSide select").eq(1).val(data.teams['blue2']);
+          $(".blueSide select").eq(2).val(data.teams['blue3']);
+          $(".redSide select").eq(0).val(data.teams['red1']);
+          $(".redSide select").eq(1).val(data.teams['red2']);
+          $(".redSide select").eq(2).val(data.teams['red3']);
 
 
 
@@ -558,10 +566,17 @@ $CURR_MATCH;
 
 <?php
 
-function printTeamSelectionOptions(){
+function printTeamSelectionOptions($t){
   global $COMP_TEAMS;
+  global $CURR_MATCH;
+  echo "<option value=''></option>";
   foreach($COMP_TEAMS as $team){
-    echo "<option value='$team'>$team</option>";
+    $selected = "";
+    if($team == $CURR_MATCH->teams[$t]){
+      $selected = "selected";
+    }
+
+    echo "<option $selected value='$team'>$team</option>";
   }
 
 }

@@ -12,27 +12,25 @@ error_reporting(E_ALL);
 class Match {
 
   public $compID;
+  public $matchNumber;
   public $id;
-  public $red1;
-  public $red2;
-  public $red3;
-  public $blue1;
-  public $blue2;
-  public $blue3;
   public $claimedTeams = array();
   public $defenses;
+  public $teams = array();
 
   public $helper;
 
-  public function __construct($id,$compID){
+  public function __construct($matchNumber,$compID){
 
     $this->helper = new Helper();
     $this->defenses = array();
 
 
-    if(!is_null($id)){
-      $this->id = $id;
+
+    if(!is_null($matchNumber)){
+      $this->matchNumber = $matchNumber;
       $this->compID = $compID;
+
       $this->getInfo();
     }
 
@@ -40,31 +38,26 @@ class Match {
 }
 
   public function getInfo(){
-    $query = "SELECT * FROM matches WHERE id = :id AND compID = :compID";
-    $params = array(":id" => $this->id,":compID" => $this->compID);
+    $query = "SELECT * FROM matches WHERE matchNumber = :matchNumber AND compID = :compID";
+    $params = array(":matchNumber" => $this->matchNumber,":compID" => $this->compID);
     $result = $this->helper->queryDB($query,$params,false);
-    $this->compID = $result[0]['compID'];
-    $this->red1 = $result[0]['red1'];
-    $this->red2 = $result[0]['red2'];
-    $this->red3 = $result[0]['red3'];
-    $this->blue1 = $result[0]['blue1'];
-    $this->blue2 = $result[0]['blue2'];
-    $this->blue3 = $result[0]['blue3'];
+    $this->id = $result[0]['id'];
     $this->getDefenses();
     $this->claimedTeams = $this->getClaimedTeams();
+    $this->teams = $this->getTeams();
   }
 
   public function getDefenses(){
     $query = "SELECT mD.side, mD.slot, d.id, d.name, d.category, d.img
               FROM  `matchDefenses` mD
               JOIN defenses d ON mD.defenseID = d.id
-              WHERE mD.compId = :compID
-              AND mD.matchID = :matchID ";
+              WHERE mD.matchID = :id ";
 
-    $params = array(":compID" => $this->compID, ":matchID" => $this->id);
+    $params = array(":id" => $this->id);
     $result = $this->helper->queryDB($query,$params,false);
 
     foreach($result as $row){
+
       $defense = new MatchDefense();
       $defense->side = $row['side'];
       $defense->slot = $row['slot'];
@@ -73,7 +66,6 @@ class Match {
       $defense->category = $row['category'];
       $defense->img = $row['img'];
       $defense->matchID = $this->id;
-      $defense->compID = $this->compID;
 
       array_push($this->defenses, $defense);
 
@@ -81,9 +73,10 @@ class Match {
 
   }
 
-
   public function getDefenseAt($side,$slot){
+
     foreach($this->defenses as $defense){
+
       if($defense->side == $side && $defense->slot == $slot){
         return $defense;
       }
@@ -91,47 +84,21 @@ class Match {
     return null;
   }
 
-
   public function deleteAllDefenses(){
-    $query = "DELETE FROM matchDefenses WHERE matchID = :matchID AND compID = :compID";
+    $query = "DELETE FROM matchDefenses WHERE matchID = :id";
     $params = array(
-      ":matchID" => $this->id,
-      ":compID" => $this->compID
+      ":id" => $this->id
     );
-    $result = $this->helper->queryDB($query,$params,true);
-    return $result;
-  }
-
-  public function update(){
-    $query = "UPDATE matches
-              SET red1 = :red1,
-                  red2 = :red2,
-                  red3 = :red3,
-                  blue1 = :blue1,
-                  blue2 = :blue2,
-                  blue3 = :blue3
-              WHERE id = :matchID AND compID = :compID";
-    $params = array(
-      ":red1" => $this->red1,
-      ":red2" => $this->red2,
-      ":red3" => $this->red3,
-      ":blue1" => $this->blue1,
-      ":blue2" => $this->blue2,
-      ":blue3" => $this->blue3,
-      ":matchID" => $this->id,
-      ":compID" => $this->compID
-    );
-
     $result = $this->helper->queryDB($query,$params,true);
     return $result;
   }
 
   public function getClaimedTeams(){
     $query = "SELECT teamNumber
-              FROM teamReservations
+              FROM teammatches
               WHERE matchID = :matchID
-                 AND compID = :compID";
-    $params = array(":matchID" => $this->id, ":compID" => $this->compID);
+                 AND deviceID != ''";
+    $params = array(":matchID" => $this->id);
     $result = $this->helper->queryDB($query,$params, false);
     $arr = array();
     foreach($result as $row){
@@ -140,14 +107,27 @@ class Match {
     return $arr;
   }
 
+  public function getTeams(){
+    $query = "SELECT teamNumber,side,position
+              FROM teammatches
+              WHERE matchID = :matchID";
+    $params = array(":matchID" => $this->id);
+    $result = $this->helper->queryDB($query,$params, false);
+    $arr = array();
+    foreach($result as $row){
+      $arr[$row['side'] . $row['position']] = $row['teamNumber'];
+    }
+    return $arr;
+  }
+
   public function isTeamClaimed($teamNumber){
     $query = "SELECT teamNumber
-              FROM teamReservations
+              FROM teammatches
               WHERE matchID = :matchID
-                 AND compID = :compID
-                 AND teamNumber = :team";
+                 AND teamNumber = :team
+                 AND deviceID != ''";
 
-    $params = array(":matchID" => $this->id, ":compID" => $this->compID,":team" => $teamNumber);
+    $params = array(":matchID" => $this->id,":team" => $teamNumber);
     $result = $this->helper->queryDB($query,$params, false);
 
     if(count($result) > 0){
@@ -158,22 +138,25 @@ class Match {
     }
 
   }
+
   public function claimTeam($teamNumber,$deviceID){
-    $query = "INSERT INTO teamReservations(compID, matchID, teamNumber,deviceID)
-                                   VALUES(:compID,:matchID,:teamNumber,:deviceID)";
-    $params = array(":matchID" => $this->id, ":compID" => $this->compID,":teamNumber" => $teamNumber, ":deviceID" => $deviceID);
+    $query = "UPDATE teammatches SET deviceID = :deviceID WHERE matchID = :id AND teamNumber = :teamNumber";
+    $params = array(":id" => $this->id,":teamNumber" => $teamNumber, ":deviceID" => $deviceID);
     $result = $this->helper->queryDB($query,$params, true);
     return $result;
   }
 
   public function isConfigured(){
-    $query = "SELECT * FROM matchDefenses WHERE compID = :compID AND matchID = :matchID";
-    $params = array(":matchID" => $this->id, ":compID" => $this->compID,);
-    $result = $this->helper->queryDB($query,$params, false);
+    $query = "SELECT * FROM matchDefenses WHERE matchID = :matchID";
+    $params = array(":matchID" => $this->id);
+    $result1 = $this->helper->queryDB($query,$params, false);
 
-//    var_dump($result);
 
-    if(count($result) >= 8){
+    $query = "SELECT * FROM teammatches WHERE matchID = :matchID";
+    $params = array(":matchID" => $this->id);
+    $result2 = $this->helper->queryDB($query,$params, false);
+
+    if(count($result1) >= 8 && count($result2) >= 6){
       return true;
     }
     else{
@@ -184,45 +167,24 @@ class Match {
   }
 
   function deleteData($teamNumber){
+
+    $query = "SELECT id FROM teamMatches WHERE matchID = :matchID AND teamNumber = :teamNumber";
+    $params = array(":matchID" => $this->id, ":teamNumber" =>$teamNumber);
+    $result = $this->helper->queryDB($query,$params,false);
+    $teamMatchID = $result[0]['id'];
+
+
     $this->helper->con = $this->helper->connectToDB();
     $this->helper->con->beginTransaction();
 
     $types = array("feed" => "feeds","breach"=>"breaches","shoot" => "shoots", "climb" => "climbs");
-    $params = array(":matchID" => $this->id, ":compID" => $this->compID, ":teamNumber" => $teamNumber);
+    $params = array(":teamMatchID" => $teamMatchID);
 
     foreach($types as $eventType => $tableName){
 
-      $tableName = ucwords($tableName);
-
-      $query = "DELETE
-              FROM $tableName
-              WHERE id IN(
-                  SELECT actionID
-                  FROM match$tableName
-                  WHERE matchID = :matchID
-                  AND compID = :compID
-                  AND teamNumber = :teamNumber);
-                  ";
-
-
-      $stmt = $this->helper->con->prepare($query);
-      if ($params !== null) {
-        foreach ($params as $key => $param) {
-          $stmt->bindValue($key, trim($param));
-        }
-      }
-      try {
-        $stmt->execute();
-      } catch (PDOException $e) {
-        $this->helper->con->rollBack();
-        return false;
-      }
-
       $query = "DELETE
                   FROM match$tableName
-                  WHERE matchID = :matchID
-                  AND compID = :compID
-                  AND teamNumber = :teamNumber;
+                  WHERE teamMatchID = :teamMatchID;
                   ";
 
 
@@ -243,9 +205,14 @@ class Match {
     }
 
 
-    $query = "DELETE FROM teamReservations WHERE matchID = :matchID AND compID = :compID AND teamNumber = :teamNumber";
-
-
+    $query = "UPDATE teamMatches
+              SET deviceID = '',
+                  collectionEnded = 0,
+                  collectionStarted = 0,
+                  matchData = ''
+              WHERE matchID = :matchID
+              AND teamNumber = :teamNumber";
+    $params = array(":matchID" => $this->id, ":teamNumber" =>$teamNumber);
     $stmt = $this->helper->con->prepare($query);
     if ($params !== null) {
       foreach ($params as $key => $param) {
@@ -266,10 +233,9 @@ class Match {
 
   }
 
-  public function getClaimedTeamForDevice($deviceID){
-    $query = "SELECT teamNumber FROM teamReservations WHERE compID = :compID AND matchID = :matchID AND deviceID = :deviceID";
-    $params = array(":compID" => $this->compID,
-                    ":matchID" => $this->id,
+  public function getClaimedTeamMatchForDevice($deviceID){
+    $query = "SELECT * FROM teamMatches WHERE matchID = :matchID AND deviceID = :deviceID";
+    $params = array(":matchID" => $this->id,
                     ":deviceID" => $deviceID);
 
     $result = $this->helper->queryDB($query,$params, false);
@@ -277,7 +243,7 @@ class Match {
       return false;
     }
     else{
-      return $result[0]['teamNumber'];
+      return $result[0];
     }
 
 
@@ -286,21 +252,69 @@ class Match {
 
   public function getNumberOfTeamsScouted(){
     $query = "
-SELECT DISTINCT teamNumber FROM
-(
-  SELECT DISTINCT teamNumber FROM matchFeeds WHERE matchID = :matchID AND compID = :compID UNION
-  SELECT DISTINCT teamNumber FROM matchShoots WHERE matchID = :matchID AND compID = :compID UNION
-  SELECT DISTINCT teamNumber FROM matchBreaches WHERE matchID = :matchID AND compID = :compID UNION
-  SELECT DISTINCT teamNumber FROM matchClimbs WHERE matchID = :matchID AND compID = :compID
-  ) as a
+      SELECT teamNumber FROM teamMatches
+
+              JOIN (
+                SELECT teamMatchID FROM matchBreaches UNION
+                SELECT teamMatchID FROM matchClimbs UNION
+                SELECT teamMatchID FROM matchFeeds UNION
+                SELECT teamMatchID FROM matchShoots
+              ) as a
+
+              ON teamMatches.id = a.teamMatchID
+              JOIN matches ON teamMatches.matchID = matches.id
+              WHERE matches.id = :matchID
 ";
-    $params = array(":matchID" => $this->id, ":compID" => $this->compID);
+    $params = array(":matchID" => $this->id);
     $result = $this->helper->queryDB($query,$params,false);
 //    var_dump($result);
     return count($result);
 
   }
 
+  public function updateTeams(){
+
+    foreach($this->teams as $key=>$teamNumber){
+      $side = substr($key,0,-1);
+      $position = substr($key,-1);
+      if($teamNumber != "" & $teamNumber != null){
+
+
+
+        $query = "INSERT INTO teammatches (matchID,side,position,teamNumber)
+                                  VALUES (:matchID,:side,:position,:teamNumber)
+                    ON DUPLICATE KEY UPDATE matchID = :matchID2,
+                                            side = :side2,
+                                            position = :position2,
+                                            teamNumber = :teamNumber2";
+        $params = array(
+          "matchID" => $this->id,
+          "matchID2" => $this->id,
+          ":side" => $side,
+          ":side2" => $side,
+          ":position" => $position,
+          ":position2" => $position,
+          ":teamNumber" => $teamNumber,
+          ":teamNumber2" => $teamNumber
+        );
+
+        $this->helper->queryDB($query,$params,true);
+      }
+      else{
+        $query = "DELETE FROM teamMatches WHERE matchID = :matchID AND side = :side AND position = :position";
+        $params = array(
+          ":matchID" => $this->id,
+          ":side" => $side,
+          ":position" => $position
+        );
+        $this->helper->queryDB($query,$params,true);
+      }
+
+
+    }
+
+
+  }
 
 
 }

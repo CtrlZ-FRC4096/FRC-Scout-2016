@@ -15,10 +15,7 @@ include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
 $JSONdata = $_COOKIE['matchData'];
 $data = json_decode($JSONdata);
-$match = new Match($data->matchID, $data->compID);
-$matchID = $data->matchID;
-$compID = $data->compID;
-$teamNumber = $data->teamNumber;
+$teamMatchID = $data->teamMatch->id;
 $helper = new Helper();
 $helper->con = $helper->connectToDB();
 $helper->con->beginTransaction();
@@ -31,24 +28,15 @@ foreach($data->actions as $record){
 
   switch($record->eventType){
     case "feed":
-        $query = "INSERT INTO feeds(zoneID,mode) VALUES ((SELECT id FROM zones WHERE name = :zone),:mode)";
-        $stmt = $helper->con->prepare($query);
-
-        $stmt->bindValue(":zone", trim($record->zone));
-        $stmt->bindValue(":mode", trim($record->mode));
-
       try {
-        $stmt->execute();
-        $insertID = $helper->con->lastInsertId();
-        $query = "INSERT INTO matchFeeds(actionID, matchID, compID,orderID,teamNumber,`mode`)
-                                    VALUES(:actionID,:matchID,:compID,:orderID,:teamNumber,:mode)";
+        $query = "INSERT INTO matchFeeds(teamMatchID,orderID,`mode`,zoneID)
+                                    VALUES(:teamMatchID,:orderID,:mode,(SELECT id FROM zones WHERE name = :zone))";
         $stmt = $helper->con->prepare($query);
-        $stmt->bindValue(":actionID", $insertID);
-        $stmt->bindValue(":matchID", $matchID);
-        $stmt->bindValue(":compID", $compID);
+        $stmt->bindValue(":teamMatchID", $teamMatchID);
         $stmt->bindValue(":orderID", $record->orderID);
-        $stmt->bindValue(":teamNumber", $teamNumber);
         $stmt->bindValue(":mode", $record->mode);
+        $stmt->bindValue(":zone", trim($record->zone));
+
         $stmt->execute();
       } catch (PDOException $e) {
         echo $e->getMessage();
@@ -61,33 +49,21 @@ foreach($data->actions as $record){
       break;
     case "breach":
 
-
-      $query = "INSERT INTO breaches(startZone,defenseID,endZone,fail,mode)
-                            VALUES ((SELECT id FROM zones WHERE name = :startZone),
-                                    :defenseID,
-                                    (SELECT id FROM zones WHERE name = :endZone),
-                                    :fail,
-                                    :mode)";
-      $stmt = $helper->con->prepare($query);
-
-      $stmt->bindValue(":startZone", trim($record->startZone));
-      $stmt->bindValue(":defenseID", trim($record->defenseID));
-      $stmt->bindValue(":endZone", trim($record->endZone));
-      $stmt->bindValue(":fail", ($record->fail == "true" ? 1 : 0));
-      $stmt->bindValue(":mode", trim($record->mode));
-
       try {
-        $stmt->execute();
-        $insertID = $helper->con->lastInsertId();
-        $query = "INSERT INTO matchBreaches(actionID, matchID, compID,orderID,teamNumber,`mode`)
-                                    VALUES(:actionID,:matchID,:compID,:orderID,:teamNumber,:mode)";
+        $query = "INSERT INTO matchBreaches(teamMatchID,orderID,`mode`,startZone,defenseID,endZone,fail)
+                                    VALUES(:teamMatchID,:orderID,:mode,
+                                    (SELECT id FROM zones WHERE name = :startZone)
+                                    ,:defenseID,
+                                    (SELECT id FROM zones WHERE name = :endZone),:fail)";
         $stmt = $helper->con->prepare($query);
-        $stmt->bindValue(":actionID", $insertID);
-        $stmt->bindValue(":matchID", $matchID);
-        $stmt->bindValue(":compID", $compID);
+        $stmt->bindValue(":teamMatchID", $teamMatchID);
         $stmt->bindValue(":orderID", $record->orderID);
-        $stmt->bindValue(":teamNumber", $teamNumber);
         $stmt->bindValue(":mode", $record->mode);
+        $stmt->bindValue(":startZone", trim($record->startZone));
+        $stmt->bindValue(":defenseID", trim($record->defenseID));
+        $stmt->bindValue(":endZone", trim($record->endZone));
+        $stmt->bindValue(":fail", ($record->fail == "true" ? 1 : 0));
+
         $stmt->execute();
       } catch (PDOException $e) {
         echo $e->getMessage();
@@ -99,29 +75,17 @@ foreach($data->actions as $record){
 
       break;
     case "shoot":
-
-      $query = "INSERT INTO shoots(coordX,coordY,highLow,scoreMiss,mode)
-                            VALUES (:coordX,:coordY,:highLow,:scoreMiss,:mode)";
-      $stmt = $helper->con->prepare($query);
-
-      $stmt->bindValue(":coordX", trim($record->coordX));
-      $stmt->bindValue(":coordY", trim($record->coordY));
-      $stmt->bindValue(":highLow", intval($record->highLow));
-      $stmt->bindValue(":scoreMiss", intval($record->scoreMiss));
-      $stmt->bindValue(":mode", trim($record->mode));
-
       try {
-        $stmt->execute();
-        $insertID = $helper->con->lastInsertId();
-        $query = "INSERT INTO matchShoots(actionID, matchID, compID,orderID,teamNumber,`mode`)
-                                    VALUES(:actionID,:matchID,:compID,:orderID,:teamNumber,:mode)";
+        $query = "INSERT INTO matchShoots(teamMatchID,orderID,`mode`,coordX,coordY,highLow,scoreMiss)
+                                    VALUES(:teamMatchID,:orderID,:mode,:coordX,:coordY,:highLow,:scoreMiss)";
         $stmt = $helper->con->prepare($query);
-        $stmt->bindValue(":actionID", $insertID);
-        $stmt->bindValue(":matchID", $matchID);
-        $stmt->bindValue(":compID", $compID);
+        $stmt->bindValue(":teamMatchID", $teamMatchID);
         $stmt->bindValue(":orderID", $record->orderID);
-        $stmt->bindValue(":teamNumber", $teamNumber);
         $stmt->bindValue(":mode", $record->mode);
+        $stmt->bindValue(":coordX", trim($record->coordX));
+        $stmt->bindValue(":coordY", trim($record->coordY));
+        $stmt->bindValue(":highLow", intval($record->highLow));
+        $stmt->bindValue(":scoreMiss", intval($record->scoreMiss));
 
         $stmt->execute();
       } catch (PDOException $e) {
@@ -136,34 +100,28 @@ foreach($data->actions as $record){
   }
 }
 
-$query = "INSERT INTO climbs(batterReached,duration) VALUES (:batterReached,:duration)";
-$stmt = $helper->con->prepare($query);
-
-$stmt->bindValue(":batterReached", ($data->endGame->batterReached == "true" ? 1 : 0));
-
-$time = explode(":",$data->endGame->duration);
-
-$stmt->bindValue(":duration", intval($time[0]) * 60 + intval($time[1]));
-
 try {
-  $stmt->execute();
-  $insertID = $helper->con->lastInsertId();
-  $query = "INSERT INTO matchClimbs(actionID, matchID, compID,teamNumber,`mode`)
-                                    VALUES(:actionID,:matchID,:compID,:teamNumber,:mode)";
+
+  $query = "INSERT INTO matchClimbs(teamMatchID, `mode`,batterReached,duration,defensiveRating,offensiveRating)
+                                    VALUES(:teamMatchID,:mode,:batterReached,:duration,:defensiveRating,:offensiveRating)";
   $stmt = $helper->con->prepare($query);
-  $stmt->bindValue(":actionID", $insertID);
-  $stmt->bindValue(":matchID", $matchID);
-  $stmt->bindValue(":compID", $compID);
-  $stmt->bindValue(":teamNumber", $teamNumber);
-  $stmt->bindValue(":mode", $teamNumber);
+  $stmt->bindValue(":teamMatchID", $teamMatchID);
+  $stmt->bindValue(":mode", 'tele');
+  $stmt->bindValue(":batterReached", ($data->endGame->batterReached == "true" ? 1 : 0));
+  $stmt->bindValue(":defensiveRating", $data->endGame->defensiveRating );
+  $stmt->bindValue(":offensiveRating", $data->endGame->offensiveRating );
+
+  $time = explode(":",$data->endGame->duration);
+
+  $stmt->bindValue(":duration", intval($time[0]) * 60 + intval($time[1]));
+
   $stmt->execute();
 
-  $query = "UPDATE teamReservations SET collectionEnded = 1, matchData = :matchData WHERE compID = :compID AND matchID = :matchID AND teamNumber = :teamNumber";
+  $query = "UPDATE teammatches SET collectionEnded = 1, matchData = :matchData WHERE id = :teamMatchID";
   $stmt = $helper->con->prepare($query);
   $stmt->bindValue(":matchData", $JSONdata);
-  $stmt->bindValue(":compID", $compID);
-  $stmt->bindValue(":matchID", $matchID);
-  $stmt->bindValue(":teamNumber", $teamNumber);
+  $stmt->bindValue(":teamMatchID", $teamMatchID);
+
   $stmt->execute();
 } catch (PDOException $e) {
   echo $e->getMessage();
