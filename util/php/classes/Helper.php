@@ -10,18 +10,16 @@ class Helper {
 
   public $con;
 
-  public $LEFT_TEAM = "blue";
-  public $RIGHT_TEAM = "red";
+  public $LEFT_TEAM = "red";
+  public $RIGHT_TEAM = "blue";
+  public $autoCycleDBConnection = true;
+
   const HALF_FIELD_LENGTH_INCHES = 325.11;
   const HALF_FIELD_HEIGHT_INCHES = 319.72;
 
 
-
   public function connectToDB()
   {
-    // $host = 'illiniroboticsorg.netfirmsmysql.com';
-    // $username = 'scout';
-    // $password = 'scoutingisfun';
        $host = 'localhost';
        $username = 'user';
        $password = 'user';
@@ -39,7 +37,9 @@ class Helper {
 
   public function queryDB($query, $params, $update)
   {
-    $this->con = $this->connectToDB();
+    if($this->autoCycleDBConnection){
+      $this->con = $this->connectToDB();
+    }
 
     $stmt = $this->con->prepare($query);
     if ($params !== null) {
@@ -57,10 +57,14 @@ class Helper {
 
     if (!$update) {
       $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      $this->con = null;
+      if($this->autoCycleDBConnection) {
+        $this->con = null;
+      }
       return $r;
     } else {
-      $this->con = null;
+      if($this->autoCycleDBConnection) {
+        $this->con = null;
+      }
 
       return true;
     }
@@ -193,6 +197,20 @@ class Helper {
     $result = $this->queryDB($query, $params, true);
     return $result;
   }
+
+
+  public function getScouters(){
+    $query = "SELECT * FROM scouters";
+    $params = null;
+    $result = $this->queryDB($query,$params,false);
+    $arr = array();
+
+    foreach($result as $row){
+      array_push($arr,$row['scouterName']);
+
+    }
+    return $arr;
+    }
 
 
 

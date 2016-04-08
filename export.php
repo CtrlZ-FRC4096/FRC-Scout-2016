@@ -12,7 +12,6 @@ include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
 $helper = new Helper();
 $currCompetition = $helper->getCurrentCompetition();
-$CURR_MATCH_NUM = $currCompetition->getLastExportedMatchID() +1;
 ?>
 
 
@@ -23,6 +22,28 @@ $CURR_MATCH_NUM = $currCompetition->getLastExportedMatchID() +1;
 <head>
   <?php require_once($_SERVER['DOCUMENT_ROOT'] . "/client_includes.php"); ?>
 
+  <style>
+    #allMatches,#exportMatches {
+      list-style-type: none;
+      padding-left:0;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    #allMatches li,#exportMatches li{
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .availableButton {
+      font-size: 18px;
+    }
+
+    h3{
+      text-align: center;
+    }
+
+  </style>
 
 </head>
 <body style="background-image: '/util/img/scouting-home-bg.jpg';">
@@ -32,47 +53,124 @@ $CURR_MATCH_NUM = $currCompetition->getLastExportedMatchID() +1;
 </div>
 <hr>
 
-<div class="row center-sm" style="width: 100%;">
-  <div class="col-sm-2">
+<div class="row" style="width: 100%;">
+  <div class="col-sm-6" >
+    <h3>Available Matches</h3>
     <div style=" margin-top: 3%;">
-      <h3 style="text-align: center;">
-        Match
-        <select id="matchSwitcher">
-
-          <?php
-          $CURR_MATCH_SCOUTED = 0;
-          foreach($currCompetition->matches as $match){
-            $num = $match->id;
-            $teamsScouted  = $match->getNumberOfTeamsScouted();
-            $selected = "";
-            if($num == $CURR_MATCH_NUM){
-              $selected = "selected";
-              $CURR_MATCH = $match;
-              $CURR_MATCH_SCOUTED = $teamsScouted;
-            }
-            else{
-              $selected = "";
-            }
-
-            echo "<option id='teamsScouted' data-numScouted='$CURR_MATCH_SCOUTED' $selected value='$num'>$num</option>";
+      <ul id="allMatches">
+        <?php
+          $count = 0;
+        foreach($currCompetition->matches as $match){
+          $count++;
+          echo "<li><div style='margin: 10px'>
+                    <a data-matchNumber='$match->matchNumber'
+                    class='availableButton button button-rounded button-flat-primary button-large'>$match->matchNumber</a>
+                </div></li>";
+          if($count == 5){
+            echo "<br>";
+            $count = 0;
           }
-          ?>
+        }
 
+        ?>
+      </ul>
+    </div>
+    </div>
+  <div class="col-sm-6" >
+    <h3>Selected Matches</h3>
+    <div style=" margin-top: 3%;">
+      <ul id="exportMatches">
 
-        </select>
-      </h3>
-      <h3><?=$CURR_MATCH_SCOUTED?> teams scouted</h3>
-
-      <hr>
-</div>
+      </ul>
     </div>
   </div>
+  <a id="exportSelected" style="margin: 0 auto; margin-top: 40px;"
+    class='button button-rounded button-flat-action button-large'>
+    Export Data
+  </a>
+</div>
 <script>
 
-  $("#matchSwitcher").change(function(){
+$(document).ready(function(){
+  var maxWidth = Math.max.apply(null, $(".availableButton").map(function ()
+  {
+    return $(this).width();
+  }).get());
+
+  $(".availableButton").width(maxWidth);
+
+  $(".availableButton").click(function(){
+
+    var matchNumber = $(this).text();
+
+    if($(this).hasClass("disabled")){
+      $(this).removeClass("disabled");
+      $(".exportButton[data-matchNumber='"+matchNumber+"']").parent().parent().remove();
+      $("#exportMatches br").remove();
+      $("#exportMatches li:nth-child(5n)").after("<br>");
+      return;
+    }
+
+    var count = $(".exportButton").length;
+    var br = ""
+    if((count) % 5 == 0){
+      br = "<br />"
+    }
+
+    var html = "<li><div style='margin: 10px'> <a data-matchNumber='"+matchNumber+"' class='exportButton button button-rounded button-flat-primary button-large'>"+matchNumber+"</a> </div></li>"
+    $("#exportMatches").html(html + br + $("#exportMatches").html())
+
+    var maxWidth = Math.max.apply(null, $(".exportButton").add(".availableButton").map(function ()
+    {
+      return $(this).width();
+    }).get());
+
+    $(".exportButton").width(maxWidth);
+
+    $(this).addClass("disabled");
+
+    $("#exportMatches li").sort(
+        function (a, b){
+          return parseInt(($(b).text())) < parseInt(($(a).text())) ? 1 : -1;
+      }).appendTo('#exportMatches');
+
+    $("#exportMatches br").remove();
+    $("#exportMatches li:nth-child(5n)").after("<br>");
+  });
 
 
-    $("#teamsScouted").text($(this).attr("data-numScouted"));
+  $("#exportMatches").on("click",".exportButton",function() {
+
+    var num = $(this).text();
+    $(this).parent().parent().remove();
+    $(".availableButton[data-matchNumber='"+num+"']").removeClass("disabled");
+    $("#exportMatches br").remove();
+    $("#exportMatches li:nth-child(5n)").after("<br>");
+
+  });
+
+  $("#exportSelected").click(function(){
+
+    var arr = [];
+
+    $("#exportMatches a").each(function(index,e){
+      arr.push(parseInt($(e).text()));
+    });
+
+    var min = Math.min.apply( Math, arr);
+    var max = Math.max.apply( Math, arr);
+
+    $.ajax({
+      type: "POST",
+      url: "/util/php/serve/generateExportData.php",
+      data: {matchNumbers:JSON.stringify(arr)},
+      async: false,
+      success: function (data) {
+        download(data,"matches-" + min + "-" + max + ".txt");
+      }
+    });
+
+  });
 
 
   })

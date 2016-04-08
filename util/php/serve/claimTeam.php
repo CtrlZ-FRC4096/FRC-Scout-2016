@@ -14,7 +14,7 @@ if($match->isTeamClaimed($_POST['teamNumber'])){
   echo "fail";
 }
 else{
-  if($match->claimTeam($_POST['teamNumber'],$_COOKIE['deviceID'])){
+  if($match->claimTeam($_POST['teamNumber'],$_COOKIE['deviceID'],$_POST['scouterName'])){
     echo "success";
   }
   else{

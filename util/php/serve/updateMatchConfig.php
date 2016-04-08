@@ -38,6 +38,21 @@ foreach($data->data as $defense){
 
 }
 
+$matchDefense = new MatchDefense();
+
+$matchDefense->matchID = $match->id;
+$matchDefense->side = "red";
+$matchDefense->slot = 1;
+$matchDefense->id = 9;
+
+$matchDefense->insert();
+
+$matchDefense->side = "blue";
+
+$matchDefense->insert();
+
+
+
 echo "Success";
 
 

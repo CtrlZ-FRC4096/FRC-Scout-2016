@@ -12,10 +12,11 @@ include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
 $helper = new Helper();
 $currCompetition = $helper->getCurrentCompetition();
+//var_dump($currCompetition);
 $COMP_TEAMS = $helper->getTeamNumbersForCompetition($currCompetition->id);
 $LEFT_TEAM = $helper->LEFT_TEAM;
 $RIGHT_TEAM = $helper->RIGHT_TEAM;
-$CURR_MATCH_NUM = $currCompetition->getLastMatchWithData()->id +1;
+$CURR_MATCH_NUM = $currCompetition->getLastMatchWithData()->matchNumber +1;
 $CURR_MATCH;
 ?>
 
@@ -87,7 +88,7 @@ $CURR_MATCH;
               $num = $match->id;
 
               $selected = "";
-              if($num == $CURR_MATCH_NUM){
+              if($match->matchNumber == $CURR_MATCH_NUM){
                 $selected = "selected";
                 $CURR_MATCH = $match;
               }
@@ -95,7 +96,7 @@ $CURR_MATCH;
                 $selected = "";
               }
 
-              echo "<option $selected value='$num'>$num</option>";
+              echo "<option $selected value='$match->matchNumber'>$match->matchNumber</option>";
             }
             ?>
           </select>

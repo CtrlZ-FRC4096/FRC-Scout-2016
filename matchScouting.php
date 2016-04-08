@@ -138,6 +138,10 @@ if (isset($_COOKIE['matchData'])) {
     }
 
 
+    .toast-warning{
+      opacity: 1 !important;
+    }
+
   </style>
 
 </head>
@@ -394,6 +398,18 @@ EOT;
       <div style="width: 100%">
         <div style="width: 50%;float: left;height: 2px"></div>
         <div style="width: 50%;float: left">
+          <h1 id="climbSuccess" data-climbSuccess="false"
+            style="margin: 25px 50px 0 50px;
+                   text-align: center;
+                   font-weight: bold;
+                   color:white;
+                   background-color: #BD5A5A;
+                   padding: 20px;">Did Not Complete Climb</h1>
+        </div>
+      </div>
+      <div style="width: 100%">
+        <div style="width: 50%;float: left;height: 2px"></div>
+        <div style="width: 50%;float: left">
           <h1 style="text-align: center;font-weight: bold" id="climbTimer">00:00 mins</h1>
         </div>
       </div>
@@ -565,6 +581,10 @@ $(document).ready(function () {
           if(data.endGame.batterReached == "true"){
             $("#reachedBatter").trigger("click");
           }
+          if(data.endGame.success == "true"){
+            $("#climbSuccess").trigger("click");
+          }
+
           $("#climbTimer").text(data.endGame.duration + " mins");
           generateJSON();
 
@@ -872,6 +892,16 @@ $(document).ready(function () {
       $(this).attr("data-reached","false").css("background-color","#BD5A5A").find("h1").text("Did Not Reach Batter");;
     }
     generateJSON();
+  });
+
+  $("#endGamePage #climbSuccess").click(function(){
+    if($(this).attr("data-climbSuccess") == "false"){
+      $(this).attr("data-climbSuccess","true").css("background-color","#458045").text("Completed Climb");
+    }
+    else{
+      $(this).attr("data-climbSuccess","false").css("background-color","#BD5A5A").text("Did Not Complete Climb");;
+    }
+    generateJSON();
   })
 
   var sec = 0;
@@ -932,6 +962,7 @@ var climbTimer;
         if(data == "Success"){
           toastr["success"]("The match has been updated successfully", "Success!")
           $.removeCookie('matchData', { path: '/' });
+          $("#redirectingNotice").css("display","flex");
           location.reload();
         }
       }
@@ -1079,12 +1110,13 @@ function feedSVGDocClick(e) {
     var mode = $("#modeHeading").attr("data-mode");
     writeFeedHistoryItem(zone,mode);
     generateJSON();
+    checkAutoCount();
     $("#historyList h3").each(function (index, e) {
 
       if($(this).is(":visible")){
 
         var enteredLoop = false;
-        while ($(this).height() != 21) {
+        while ($(this).height() > 21) {
           enteredLoop = true
           $(this).css("font-size", (parseFloat($(this).css("font-size").substring(0, $(this).css("font-size").length - 2)) - 0.1) + "px");
         }
@@ -1194,6 +1226,7 @@ function checkAndAddShootHistoryItem(mode){
     "</div>");
     clearShoot();
     generateJSON();
+    checkAutoCount();
   }
 }
 
@@ -1209,6 +1242,7 @@ function clearShoot(){
 }
 
 function generateJSON(){
+
 
   var records = [];
   var counter = 1;
@@ -1230,7 +1264,8 @@ function generateJSON(){
     batterReached : $("#reachedBatter").attr("data-reached"),
     duration : $("#climbTimer").text().substr(0,5),
     defensiveRating:$("#defensiveRating").rateYo("rating"),
-    offensiveRating:$("#offensiveRating").rateYo("rating")
+    offensiveRating:$("#offensiveRating").rateYo("rating"),
+    success: $("#climbSuccess").attr("data-climbSuccess")
   };
 
   var matchData = {
@@ -1290,6 +1325,16 @@ function generateJSON(){
 
   }
 
+}
+
+function checkAutoCount(){
+
+  if($("#modeHeading").attr("data-mode") == "auto"){
+    if($("#historyList .historyItem[data-mode='auto']").length > 2){
+      toastr["warning"]("Most teams don't do so much in auto mode. Don't forget to switch", "Don't forget to switch to TELE mode!");
+
+    }
+  }
 }
 
 function isTouchDevice(){
@@ -1422,7 +1467,7 @@ function writeBreachHistoryItem(startCircleContainer,defenseCircle,clickContaine
 
 
   generateJSON();
-
+  checkAutoCount();
 
 }
 

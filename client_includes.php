@@ -17,6 +17,7 @@
 <link rel="stylesheet" type="text/css" href="/util/css/toastr.css">
 <link rel="stylesheet" type="text/css" href="/util/css/dragula.css">
 <link rel="stylesheet" type="text/css" href="/util/css/jquery.rateyo.css">
+<link rel="stylesheet" type="text/css" href="/util/css/dropzone.css">
 <script type="application/javascript" src="/util/js/modernizr.flexbox.js"></script>
 <script type="application/javascript" src="/util/js/jquery-2.2.0.min.js"></script>
 <script type="application/javascript" src="/util/js/jquery.flexverticalcenter.js"></script>
@@ -29,3 +30,5 @@
 <script type="text/javascript" src="/util/js/d3.js" charset="utf-8"></script>
 <script type="text/javascript" src="/util/js/dragula.js"></script>
 <script type="text/javascript" src="/util/js/jquery.rateyo.js"></script>
+<script type="text/javascript" src="/util/js/download.js"></script>
+<script type="text/javascript" src="/util/js/dropzone.js"></script>

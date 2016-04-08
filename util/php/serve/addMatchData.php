@@ -28,6 +28,7 @@ foreach($data->actions as $record){
 
   switch($record->eventType){
     case "feed":
+
       try {
         $query = "INSERT INTO matchFeeds(teamMatchID,orderID,`mode`,zoneID)
                                     VALUES(:teamMatchID,:orderID,:mode,(SELECT id FROM zones WHERE name = :zone))";
@@ -38,7 +39,8 @@ foreach($data->actions as $record){
         $stmt->bindValue(":zone", trim($record->zone));
 
         $stmt->execute();
-      } catch (PDOException $e) {
+      }
+      catch (PDOException $e) {
         echo $e->getMessage();
         echo "matchFeeds";
         $helper->con->rollBack();
@@ -65,7 +67,8 @@ foreach($data->actions as $record){
         $stmt->bindValue(":fail", ($record->fail == "true" ? 1 : 0));
 
         $stmt->execute();
-      } catch (PDOException $e) {
+      }
+      catch (PDOException $e) {
         echo $e->getMessage();
         echo "matchBreaches";
         $helper->con->rollBack();
@@ -75,6 +78,7 @@ foreach($data->actions as $record){
 
       break;
     case "shoot":
+
       try {
         $query = "INSERT INTO matchShoots(teamMatchID,orderID,`mode`,coordX,coordY,highLow,scoreMiss)
                                     VALUES(:teamMatchID,:orderID,:mode,:coordX,:coordY,:highLow,:scoreMiss)";
@@ -88,7 +92,8 @@ foreach($data->actions as $record){
         $stmt->bindValue(":scoreMiss", intval($record->scoreMiss));
 
         $stmt->execute();
-      } catch (PDOException $e) {
+      }
+      catch (PDOException $e) {
         echo $e->getMessage();
         echo "matchSchoots";
         $helper->con->rollBack();
@@ -102,14 +107,15 @@ foreach($data->actions as $record){
 
 try {
 
-  $query = "INSERT INTO matchClimbs(teamMatchID, `mode`,batterReached,duration,defensiveRating,offensiveRating)
-                                    VALUES(:teamMatchID,:mode,:batterReached,:duration,:defensiveRating,:offensiveRating)";
+  $query = "INSERT INTO matchClimbs(teamMatchID, `mode`,batterReached,duration,defensiveRating,offensiveRating,success)
+                                    VALUES(:teamMatchID,:mode,:batterReached,:duration,:defensiveRating,:offensiveRating,:success)";
   $stmt = $helper->con->prepare($query);
   $stmt->bindValue(":teamMatchID", $teamMatchID);
   $stmt->bindValue(":mode", 'tele');
   $stmt->bindValue(":batterReached", ($data->endGame->batterReached == "true" ? 1 : 0));
   $stmt->bindValue(":defensiveRating", $data->endGame->defensiveRating );
   $stmt->bindValue(":offensiveRating", $data->endGame->offensiveRating );
+  $stmt->bindValue(":success", ($data->endGame->success == "true" ? 1 : 0) );
 
   $time = explode(":",$data->endGame->duration);
 
@@ -117,19 +123,37 @@ try {
 
   $stmt->execute();
 
-  $query = "UPDATE teammatches SET collectionEnded = 1, matchData = :matchData WHERE id = :teamMatchID";
+  $query = "UPDATE teammatches SET collectionEnded = 1 WHERE id = :teamMatchID";
   $stmt = $helper->con->prepare($query);
-  $stmt->bindValue(":matchData", $JSONdata);
   $stmt->bindValue(":teamMatchID", $teamMatchID);
 
   $stmt->execute();
-} catch (PDOException $e) {
+}
+catch (PDOException $e) {
   echo $e->getMessage();
   echo "teamReservations";
   $helper->con->rollBack();
   echo "fail";
   return;
 }
+
+try{
+  $query = "UPDATE matches SET lastUpdated = :now WHERE id =
+                (SELECT matchID FROM teammatches WHERE id = :teamMatchID)";
+  $stmt = $helper->con->prepare($query);
+  $stmt->bindValue(":teamMatchID", $teamMatchID);
+  $stmt->bindValue(":now", time());
+  $stmt->execute();
+
+}
+catch(PDOException $e){
+  echo $e->getMessage();
+  echo "setMatchUpdated";
+  $helper->con->rollBack();
+  echo "fail";
+  return;
+}
+
 
 
 $helper->con->commit();

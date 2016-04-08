@@ -139,9 +139,9 @@ class Match {
 
   }
 
-  public function claimTeam($teamNumber,$deviceID){
-    $query = "UPDATE teammatches SET deviceID = :deviceID WHERE matchID = :id AND teamNumber = :teamNumber";
-    $params = array(":id" => $this->id,":teamNumber" => $teamNumber, ":deviceID" => $deviceID);
+  public function claimTeam($teamNumber,$deviceID,$scouterName){
+    $query = "UPDATE teammatches SET deviceID = :deviceID, scouterName = :scouterName WHERE matchID = :id AND teamNumber = :teamNumber";
+    $params = array(":id" => $this->id,":teamNumber" => $teamNumber, ":deviceID" => $deviceID,":scouterName" => $scouterName);
     $result = $this->helper->queryDB($query,$params, true);
     return $result;
   }
@@ -209,7 +209,7 @@ class Match {
               SET deviceID = '',
                   collectionEnded = 0,
                   collectionStarted = 0,
-                  matchData = ''
+                  scouterName = ''
               WHERE matchID = :matchID
               AND teamNumber = :teamNumber";
     $params = array(":matchID" => $this->id, ":teamNumber" =>$teamNumber);
@@ -313,9 +313,34 @@ class Match {
 
     }
 
+    $this->setLastUpdated();
+
 
   }
 
+  public function setLastUpdated(){
+
+    $query = "UPDATE matches SET lastUpdated = :lastUpdated
+              WHERE id = :matchID";
+
+    $params = array(
+      ":lastUpdated" => time(),
+      ":matchID" => $this->id);
+
+    $this->helper->queryDB($query,$params,true);
+  }
+
+  public function setLastExported(){
+
+    $query = "UPDATE matches SET lastExported = :lastExported
+              WHERE id = :matchID";
+
+    $params = array(
+      ":lastExported" => time(),
+      ":matchID" => $this->id);
+
+    $this->helper->queryDB($query,$params,true);
+  }
 
 }
 

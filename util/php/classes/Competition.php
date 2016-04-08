@@ -92,19 +92,5 @@ class Competition {
   }
 
 
-  public function getLastExportedMatchNumber(){
-    $query = "SELECT MAX(matchNumber) as matchNumber FROM matches WHERE compID = :compID AND exported = 1";
-    $params = array(":compID" => $this->id);
-    $result = $this->helper->queryDB($query,$params,false);
-    if(count($result) == 0){
-      return 0;
-
-    }
-    else{
-      return $result[0]["matchNumber"];
-    }
-  }
-
-
 
 } 

@@ -41,6 +41,8 @@ if(isset($_COOKIE['deviceID'])){
 }
 
 else{
+      setcookie("deviceID",$helper->getRandomDeviceID(),3650,"/");
+  $WAITING_FOR_CONFIG = false;
   require_once("teamSelection.php");
 }
 

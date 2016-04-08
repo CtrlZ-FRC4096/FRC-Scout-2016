@@ -1,2 +1,0 @@
-1. Touchscreen compatible for breach page.
-2. Export / Import

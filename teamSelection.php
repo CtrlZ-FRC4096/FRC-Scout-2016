@@ -10,7 +10,6 @@ ini_set("display_errors", "1");
 error_reporting(E_ALL);
 
 $currCompetition = $helper->getCurrentCompetition();
-
 if($WAITING_FOR_CONFIG){
   $CURR_MATCH_NUM = $match->matchNumber;
   $CURR_MATCH = $match;
@@ -96,6 +95,18 @@ $CURR_MATCH = null;
 
           ?>
         </select></h2>
+<br>
+      <h3> Name :
+      <select id="scouters">
+        <?php
+          foreach($helper->getScouters() as $scouter){
+            echo "<option value='$scouter'>" . $scouter . "</option>";
+          }
+        ?>
+      </select>
+      </h3>
+<br>
+
       <a <?=($WAITING_FOR_CONFIG ? "disabled='disabled'" : "")?>
         id="startMatch"
         class="button button-pill button-flat-primary button-large">Begin</a>
@@ -219,7 +230,7 @@ EOD;
 
       $.ajax({
         type: "POST",
-        data: {matchNumber:$("#matchSwitcher").val(), compID: <?=$currCompetition->id?>, teamNumber:$("#teamSelection").val()},
+        data: {matchNumber:$("#matchSwitcher").val(), compID: <?=$currCompetition->id?>, teamNumber:$("#teamSelection").val(),scouterName:$("#scouters").val()},
         url: "/util/php/serve/claimTeam.php",
         success: function (data) {
           if(data=="success"){
